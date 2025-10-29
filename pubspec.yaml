@@ -1,0 +1,22 @@
+name: dart_clinic
+description: A hospital management system (CLI) built with Dart + SQLite.
+version: 1.0.0
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  # ✅ Core dependencies
+  sqlite3: ^2.3.0           # For SQLite database support
+  path: ^1.9.0              # File and path handling utilities
+  ansicolor: ^2.0.1         # Add colors to terminal output
+  prompts: ^2.0.0           # For user input (interactive CLI)
+  logging: ^1.2.0           # Optional structured logging
+  intl: ^0.19.0             # For date/time formatting
+  json_annotation: ^4.9.0   # For model serialization (optional but useful)
+
+dev_dependencies:
+  lints: ^6.0.0             # Dart style linter
+  test: ^1.25.6             # Testing framework
+  build_runner: ^2.4.6      # For code generation
+  json_serializable: ^6.7.1 # Generates JSON <-> object conversions
