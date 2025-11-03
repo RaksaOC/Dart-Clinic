@@ -9,7 +9,7 @@
 /// Coordinates between the UI layer and appointment repository.
 library;
 
-import '../domain/models/appointment.dart';
+import '../domain/appointment.dart';
 import '../data/appointment_repo.dart';
 
 class AppointmentService {
@@ -17,60 +17,92 @@ class AppointmentService {
 
   AppointmentService(this._appointmentRepository);
 
-  /// TODO: Create a new appointment
-  /// Validates scheduling constraints and creates the appointment
+  /// Create a new appointment
   Future<Appointment?> createAppointment({
+    required String appointmentId,
     required String doctorId,
     required String patientId,
     required DateTime appointmentDateTime,
     String? notes,
   }) async {
-    // TODO: Validate appointment constraints
-    // TODO: Check doctor availability
-    // TODO: Check patient constraints
-    // TODO: Save appointment via repository
-    return null;
+    final appointment = Appointment(
+      id: appointmentId,
+      doctorId: doctorId,
+      patientId: patientId,
+      appointmentDateTime: appointmentDateTime,
+      status: 'scheduled',
+      notes: notes,
+      createdAt: DateTime.now(),
+    );
+    return await _appointmentRepository.create(appointment);
   }
 
-  /// TODO: Cancel an existing appointment
-  /// Applies cancellation rules and updates appointment status
+  /// Cancel an existing appointment
   Future<bool> cancelAppointment(String appointmentId) async {
-    // TODO: Check if appointment can be cancelled
-    // TODO: Update appointment status
-    // TODO: Notify relevant parties if needed
-    return false;
+    final appointment = await _appointmentRepository.getById(appointmentId);
+    if (appointment == null) {
+      return false;
+    }
+
+    final cancelledAppointment = Appointment(
+      id: appointment.id,
+      doctorId: appointment.doctorId,
+      patientId: appointment.patientId,
+      appointmentDateTime: appointment.appointmentDateTime,
+      status: 'cancelled',
+      notes: appointment.notes,
+      diagnosis: appointment.diagnosis,
+      createdAt: appointment.createdAt,
+    );
+
+    return await _appointmentRepository.update(cancelledAppointment);
   }
 
-  /// TODO: Get all appointments for a doctor
+  /// Get all appointments for a doctor
   Future<List<Appointment>> getDoctorAppointments(String doctorId) async {
-    // TODO: Retrieve appointments from repository
-    return [];
+    return await _appointmentRepository.getByDoctorId(doctorId);
   }
 
-  /// TODO: Get all appointments for a patient
+  /// Get all appointments for a patient
   Future<List<Appointment>> getPatientAppointments(String patientId) async {
-    // TODO: Retrieve appointments from repository
-    return [];
+    return await _appointmentRepository.getByPatientId(patientId);
   }
 
-  /// TODO: Complete an appointment and add diagnosis
+  /// Complete an appointment and add diagnosis
   Future<bool> completeAppointment(
     String appointmentId,
     String diagnosis,
     String? notes,
   ) async {
-    // TODO: Validate appointment status
-    // TODO: Update with diagnosis and notes
-    // TODO: Mark as completed
-    return false;
+    final appointment = await _appointmentRepository.getById(appointmentId);
+    if (appointment == null) {
+      return false;
+    }
+
+    final completedAppointment = Appointment(
+      id: appointment.id,
+      doctorId: appointment.doctorId,
+      patientId: appointment.patientId,
+      appointmentDateTime: appointment.appointmentDateTime,
+      status: 'completed',
+      notes: notes ?? appointment.notes,
+      diagnosis: diagnosis,
+      createdAt: appointment.createdAt,
+    );
+
+    return await _appointmentRepository.update(completedAppointment);
   }
 
-  /// TODO: Get upcoming appointments within a date range
+  /// Get upcoming appointments within a date range
   Future<List<Appointment>> getUpcomingAppointments(
     DateTime startDate,
     DateTime endDate,
   ) async {
-    // TODO: Query appointments in date range
-    return [];
+    return await _appointmentRepository.getByDateRange(startDate, endDate);
+  }
+
+  /// Get appointments by status
+  Future<List<Appointment>> getByStatus(String status) async {
+    return await _appointmentRepository.getByStatus(status);
   }
 }

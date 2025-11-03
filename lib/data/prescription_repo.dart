@@ -4,69 +4,76 @@
 /// Handles CRUD operations for prescription entities stored in JSON format.
 library;
 
-import '../domain/models/prescription.dart';
+import 'repo_base.dart';
+import '../domain/prescription.dart';
 
-class PrescriptionRepository {
-  // TODO: Initialize with database/path configuration
+class PrescriptionRepository extends RepositoryBase<Prescription> {
+  PrescriptionRepository() : super('lib/db/prescriptions.json');
 
-  /// TODO: Create a new prescription record
-  Future<Prescription?> create(Prescription prescription) async {
-    // TODO: Read existing prescriptions from JSON
-    // TODO: Add new prescription
-    // TODO: Write back to JSON file
-    return null;
+  @override
+  Map<String, dynamic> toJson(Prescription entity) {
+    return {
+      'id': entity.id,
+      'doctorId': entity.doctorId,
+      'patientId': entity.patientId,
+      'medicationName': entity.medicationName,
+      'dosage': entity.dosage,
+      'frequency': entity.frequency,
+      'durationDays': entity.durationDays,
+      'instructions': entity.instructions,
+      'issueDate': entity.issueDate.toIso8601String(),
+      'status': entity.status,
+      'notes': entity.notes,
+    };
   }
 
-  /// TODO: Retrieve a prescription by ID
-  Future<Prescription?> getById(String id) async {
-    // TODO: Read prescriptions from JSON
-    // TODO: Find and return prescription by ID
-    return null;
+  @override
+  Prescription fromJson(Map<String, dynamic> json) {
+    return Prescription(
+      id: json['id'] as String,
+      doctorId: json['doctorId'] as String,
+      patientId: json['patientId'] as String,
+      medicationName: json['medicationName'] as String,
+      dosage: json['dosage'] as String,
+      frequency: json['frequency'] as String,
+      durationDays: json['durationDays'] as int,
+      instructions: json['instructions'] as String,
+      issueDate: DateTime.parse(json['issueDate'] as String),
+      status: json['status'] as String,
+      notes: json['notes'] as String?,
+    );
   }
 
-  /// TODO: Update an existing prescription
-  Future<bool> update(Prescription prescription) async {
-    // TODO: Read existing prescriptions
-    // TODO: Find and update prescription
-    // TODO: Write back to JSON file
-    return false;
-  }
-
-  /// TODO: Delete a prescription by ID
-  Future<bool> delete(String id) async {
-    // TODO: Read existing prescriptions
-    // TODO: Remove prescription
-    // TODO: Write back to JSON file
-    return false;
-  }
-
-  /// TODO: Get all prescriptions
-  Future<List<Prescription>> getAll() async {
-    // TODO: Read all prescriptions from JSON
-    return [];
-  }
-
-  /// TODO: Get prescriptions by doctor ID
+  /// Get prescriptions by doctor ID
   Future<List<Prescription>> getByDoctorId(String doctorId) async {
-    // TODO: Filter prescriptions by doctor ID
-    return [];
+    final prescriptions = await loadAll();
+    return prescriptions
+        .where((prescription) => prescription.doctorId == doctorId)
+        .toList();
   }
 
-  /// TODO: Get prescriptions by patient ID
+  /// Get prescriptions by patient ID
   Future<List<Prescription>> getByPatientId(String patientId) async {
-    // TODO: Filter prescriptions by patient ID
-    return [];
+    final prescriptions = await loadAll();
+    return prescriptions
+        .where((prescription) => prescription.patientId == patientId)
+        .toList();
   }
 
-  /// TODO: Get prescriptions by status
+  /// Get prescriptions by status
   Future<List<Prescription>> getByStatus(String status) async {
-    // TODO: Filter prescriptions by status
-    return [];
+    final prescriptions = await loadAll();
+    return prescriptions
+        .where((prescription) => prescription.status == status)
+        .toList();
   }
 
-  /// TODO: Get active prescriptions for a patient
+  /// Get active prescriptions for a patient
   Future<List<Prescription>> getActiveByPatientId(String patientId) async {
-    // TODO: Filter active prescriptions by patient
-    return [];
+    final prescriptions = await loadAll();
+    return prescriptions.where((prescription) {
+      return prescription.patientId == patientId &&
+          prescription.status == 'active';
+    }).toList();
   }
 }
