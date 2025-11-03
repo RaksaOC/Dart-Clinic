@@ -2,7 +2,6 @@
 ///
 /// Handles business logic for prescription operations including:
 /// - Issuing new prescriptions
-/// - Validating medication availability
 /// - Tracking prescription status
 /// - Managing prescription expiration
 ///
@@ -17,9 +16,9 @@ class PrescriptionService {
 
   PrescriptionService(this._prescriptionRepository);
 
-  /// TODO: Issue a new prescription
-  /// Validates medication availability and creates prescription
+  /// Issue a new prescription
   Future<Prescription?> issuePrescription({
+    required String prescriptionId,
     required String doctorId,
     required String patientId,
     required String medicationName,
@@ -29,52 +28,75 @@ class PrescriptionService {
     required String instructions,
     String? notes,
   }) async {
-    // TODO: Validate medication availability in stock
-    // TODO: Check for patient allergies
-    // TODO: Validate dosage and duration
-    // TODO: Save prescription via repository
-    return null;
+    final prescription = Prescription(
+      id: prescriptionId,
+      doctorId: doctorId,
+      patientId: patientId,
+      medicationName: medicationName,
+      dosage: dosage,
+      frequency: frequency,
+      durationDays: durationDays,
+      instructions: instructions,
+      issueDate: DateTime.now(),
+      status: 'active',
+      notes: notes,
+    );
+    return await _prescriptionRepository.create(prescription);
   }
 
-  /// TODO: Cancel an active prescription
-  /// Updates prescription status to cancelled
+  /// Cancel an active prescription
   Future<bool> cancelPrescription(String prescriptionId) async {
-    // TODO: Check if prescription can be cancelled
-    // TODO: Update prescription status
-    return false;
+    final prescription = await _prescriptionRepository.getById(prescriptionId);
+    if (prescription == null || prescription.status != 'active') {
+      return false;
+    }
+
+    final cancelledPrescription = Prescription(
+      id: prescription.id,
+      doctorId: prescription.doctorId,
+      patientId: prescription.patientId,
+      medicationName: prescription.medicationName,
+      dosage: prescription.dosage,
+      frequency: prescription.frequency,
+      durationDays: prescription.durationDays,
+      instructions: prescription.instructions,
+      issueDate: prescription.issueDate,
+      status: 'cancelled',
+      notes: prescription.notes,
+    );
+
+    return await _prescriptionRepository.update(cancelledPrescription);
   }
 
-  /// TODO: Get all prescriptions for a patient
+  /// Get all prescriptions for a patient
   Future<List<Prescription>> getPatientPrescriptions(String patientId) async {
-    // TODO: Retrieve prescriptions from repository
-    return [];
+    return await _prescriptionRepository.getByPatientId(patientId);
   }
 
-  /// TODO: Get active prescriptions for a patient
+  /// Get active prescriptions for a patient
   Future<List<Prescription>> getActivePrescriptions(String patientId) async {
-    // TODO: Filter for active prescriptions only
-    return [];
+    return await _prescriptionRepository.getActiveByPatientId(patientId);
   }
 
-  /// TODO: Complete a prescription
-  Future<bool> completePrescription(String prescriptionId) async {
-    // TODO: Validate prescription status
-    // TODO: Mark as completed
-    return false;
+  /// Get all prescriptions for a doctor
+  Future<List<Prescription>> getDoctorPrescriptions(String doctorId) async {
+    return await _prescriptionRepository.getByDoctorId(doctorId);
   }
 
-  /// TODO: Check if medication is in stock
-  Future<bool> isMedicationAvailable(
-    String medicationName,
-    int quantity,
-  ) async {
-    // TODO: Check medication stock availability
-    return false;
+  /// Get prescriptions by status
+  Future<List<Prescription>> getByStatus(String status) async {
+    return await _prescriptionRepository.getByStatus(status);
   }
 
-  /// TODO: Get expired prescriptions
+  /// Get expired prescriptions
   Future<List<Prescription>> getExpiredPrescriptions() async {
-    // TODO: Query and filter expired prescriptions
-    return [];
+    final allPrescriptions = await _prescriptionRepository.getAll();
+    return allPrescriptions
+        .where(
+          (p) => p.issueDate
+              .add(Duration(days: p.durationDays))
+              .isBefore(DateTime.now()),
+        )
+        .toList();
   }
 }

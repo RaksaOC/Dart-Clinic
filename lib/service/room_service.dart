@@ -1,16 +1,14 @@
 /// Room Service
 ///
-/// Handles business logic for room and bed management including:
-/// - Assigning patients to rooms/beds
+/// Handles business logic for room management including:
 /// - Checking room availability
-/// - Managing bed occupancy
+/// - Managing room occupancy
 /// - Calculating room utilization rates
 ///
 /// Coordinates between the UI layer and room repository.
 library;
 
 import '../domain/room.dart';
-import '../domain/bed.dart';
 import '../data/room_repo.dart';
 
 class RoomService {
@@ -18,61 +16,50 @@ class RoomService {
 
   RoomService(this._roomRepository);
 
-  /// TODO: Get all available rooms
+  /// Get all available rooms
   Future<List<Room>> getAvailableRooms() async {
-    // TODO: Filter rooms with available beds
-    return [];
+    final rooms = await _roomRepository.getAll();
+    return rooms.where((room) => room.isAvailable).toList();
   }
 
-  /// TODO: Get all available beds in a specific room
-  Future<List<Bed>> getAvailableBedsInRoom(String roomId) async {
-    // TODO: Query beds by room ID and filter available ones
-    return [];
+  /// Get all rooms
+  Future<List<Room>> getAllRooms() async {
+    return await _roomRepository.getAll();
   }
 
-  /// TODO: Assign a patient to a bed
-  Future<bool> assignPatientToBed({
-    required String bedId,
-    required String patientId,
-  }) async {
-    // TODO: Validate bed availability
-    // TODO: Update bed status
-    // TODO: Update room occupancy count
-    return false;
+  /// Get rooms by type
+  Future<List<Room>> getRoomsByType(String roomType) async {
+    return await _roomRepository.getByType(roomType);
   }
 
-  /// TODO: Release a bed (patient checkout)
-  Future<bool> releaseBed(String bedId, String patientId) async {
-    // TODO: Validate bed assignment
-    // TODO: Update bed status
-    // TODO: Update room occupancy count
-    // TODO: Record checkout date
-    return false;
+  /// Get room by ID
+  Future<Room?> getRoomById(String roomId) async {
+    return await _roomRepository.getById(roomId);
   }
 
-  /// TODO: Get room details with bed information
-  Future<Room?> getRoomWithBeds(String roomId) async {
-    // TODO: Retrieve room and associated beds
-    return null;
-  }
-
-  /// TODO: Get occupancy statistics
+  /// Get occupancy statistics
   Future<Map<String, dynamic>> getOccupancyStats() async {
-    // TODO: Calculate overall occupancy rate
-    // TODO: Get stats by room type
-    // TODO: Return comprehensive statistics
-    return {};
-  }
+    final rooms = await _roomRepository.getAll();
 
-  /// TODO: Search rooms by type
-  Future<List<Room>> searchRoomsByType(String roomType) async {
-    // TODO: Filter rooms by type
-    return [];
-  }
+    int totalRooms = rooms.length;
+    int totalBeds = 0;
+    int occupiedBeds = 0;
 
-  /// TODO: Update room availability status
-  Future<bool> updateRoomStatus(String roomId, bool isAvailable) async {
-    // TODO: Update room availability flag
-    return false;
+    for (var room in rooms) {
+      totalBeds += room.totalBeds;
+      occupiedBeds += room.occupiedBeds;
+    }
+
+    final overallOccupancy = totalBeds > 0
+        ? (occupiedBeds / totalBeds) * 100
+        : 0.0;
+
+    return {
+      'totalRooms': totalRooms,
+      'totalBeds': totalBeds,
+      'occupiedBeds': occupiedBeds,
+      'availableBeds': totalBeds - occupiedBeds,
+      'overallOccupancy': overallOccupancy,
+    };
   }
 }

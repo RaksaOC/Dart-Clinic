@@ -23,27 +23,4 @@ class Bed {
     this.checkoutDate,
   });
 
-  /// TODO: Add method to check if bed is available
-  bool isAvailable() {
-    // TODO: Implement logic to check availability
-    return false;
-  }
-
-  /// TODO: Add method to calculate bed occupancy duration
-  int getOccupancyDurationDays() {
-    // TODO: Implement calculation for days occupied
-    return 0;
-  }
-
-  /// TODO: Add method to get bed details as JSON
-  Map<String, dynamic> toJson() {
-    // TODO: Implement JSON serialization
-    return {};
-  }
-
-  /// TODO: Add factory method to create Bed from JSON
-  factory Bed.fromJson(Map<String, dynamic> json) {
-    // TODO: Implement JSON deserialization
-    return Bed(id: '', roomId: '', bedNumber: '', isOccupied: false);
-  }
 }

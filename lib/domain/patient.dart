@@ -28,30 +28,4 @@ class Patient {
     this.allergies,
     this.isAdmitted = false,
   });
-
-  /// TODO: Add method to get patient's full medical profile
-  Map<String, dynamic> toJson() {
-    // TODO: Implement JSON serialization
-    return {};
-  }
-
-  /// TODO: Add factory method to create Patient from JSON
-  factory Patient.fromJson(Map<String, dynamic> json) {
-    // TODO: Implement JSON deserialization
-    return Patient(
-      id: '',
-      name: '',
-      age: 0,
-      gender: '',
-      phoneNumber: '',
-      email: '',
-      address: '',
-    );
-  }
-
-  /// TODO: Add method to check if patient has active appointments
-  bool hasActiveAppointments() {
-    // TODO: Implement logic to check active appointments
-    return false;
-  }
 }

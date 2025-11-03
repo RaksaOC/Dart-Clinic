@@ -4,57 +4,48 @@
 /// Handles CRUD operations for doctor entities stored in JSON format.
 library;
 
+import 'repo_base.dart';
 import '../domain/doctor.dart';
 
-class DoctorRepository {
-  // TODO: Initialize with database/path configuration
+class DoctorRepository extends RepositoryBase<Doctor> {
+  DoctorRepository() : super('lib/db/doctors.json');
 
-  /// TODO: Create a new doctor record
-  Future<Doctor?> create(Doctor doctor) async {
-    // TODO: Read existing doctors from JSON
-    // TODO: Add new doctor
-    // TODO: Write back to JSON file
-    return null;
+  @override
+  Map<String, dynamic> toJson(Doctor entity) {
+    return {
+      'id': entity.id,
+      'name': entity.name,
+      'specialization': entity.specialization,
+      'phoneNumber': entity.phoneNumber,
+      'email': entity.email,
+    };
   }
 
-  /// TODO: Retrieve a doctor by ID
-  Future<Doctor?> getById(String id) async {
-    // TODO: Read doctors from JSON
-    // TODO: Find and return doctor by ID
-    return null;
+  @override
+  Doctor fromJson(Map<String, dynamic> json) {
+    return Doctor(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      specialization: json['specialization'] as String,
+      phoneNumber: json['phoneNumber'] as String,
+      email: json['email'] as String,
+    );
   }
 
-  /// TODO: Update an existing doctor
-  Future<bool> update(Doctor doctor) async {
-    // TODO: Read existing doctors
-    // TODO: Find and update doctor
-    // TODO: Write back to JSON file
-    return false;
-  }
-
-  /// TODO: Delete a doctor by ID
-  Future<bool> delete(String id) async {
-    // TODO: Read existing doctors
-    // TODO: Remove doctor
-    // TODO: Write back to JSON file
-    return false;
-  }
-
-  /// TODO: Get all doctors
-  Future<List<Doctor>> getAll() async {
-    // TODO: Read all doctors from JSON
-    return [];
-  }
-
-  /// TODO: Get doctors by specialization
+  /// Get doctors by specialization
   Future<List<Doctor>> getBySpecialization(String specialization) async {
-    // TODO: Filter doctors by specialization
-    return [];
+    final doctors = await loadAll();
+    return doctors
+        .where((doctor) => doctor.specialization == specialization)
+        .toList();
   }
 
-  /// TODO: Search doctors by name
-  Future<List<Doctor>> searchByName(String name) async {
-    // TODO: Filter doctors by name (partial match)
-    return [];
+  /// Search doctors by name
+  Future<List<Doctor>> getByName(String name) async {
+    final doctors = await loadAll();
+    final lowerName = name.toLowerCase();
+    return doctors
+        .where((doctor) => doctor.name.toLowerCase().contains(lowerName))
+        .toList();
   }
 }
