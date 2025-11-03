@@ -9,8 +9,8 @@
 /// Coordinates between the UI layer and room repository.
 library;
 
-import '../domain/models/room.dart';
-import '../domain/models/bed.dart';
+import '../domain/room.dart';
+import '../domain/bed.dart';
 import '../data/room_repo.dart';
 
 class RoomService {

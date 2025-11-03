@@ -9,7 +9,7 @@
 /// Coordinates between the UI layer and appointment repository.
 library;
 
-import '../domain/models/appointment.dart';
+import '../domain/appointment.dart';
 import '../data/appointment_repo.dart';
 
 class AppointmentService {

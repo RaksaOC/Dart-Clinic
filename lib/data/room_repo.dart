@@ -4,8 +4,8 @@
 /// Handles CRUD operations for room and bed entities stored in JSON format.
 library;
 
-import '../domain/models/room.dart';
-import '../domain/models/bed.dart';
+import '../domain/room.dart';
+import '../domain/bed.dart';
 
 class RoomRepository {
   // TODO: Initialize with database/path configuration

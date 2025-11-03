@@ -9,7 +9,7 @@
 /// Coordinates between the UI layer and prescription repository.
 library;
 
-import '../domain/models/prescription.dart';
+import '../domain/prescription.dart';
 import '../data/prescription_repo.dart';
 
 class PrescriptionService {

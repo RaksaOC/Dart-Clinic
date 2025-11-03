@@ -4,7 +4,7 @@
 /// Handles CRUD operations for doctor entities stored in JSON format.
 library;
 
-import '../domain/models/doctor.dart';
+import '../domain/doctor.dart';
 
 class DoctorRepository {
   // TODO: Initialize with database/path configuration

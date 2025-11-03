@@ -4,7 +4,7 @@
 /// Handles CRUD operations for appointment entities stored in JSON format.
 library;
 
-import '../domain/models/appointment.dart';
+import '../domain/appointment.dart';
 
 class AppointmentRepository {
   // TODO: Initialize with database/path configuration

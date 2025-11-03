@@ -4,7 +4,7 @@
 /// Handles CRUD operations for prescription entities stored in JSON format.
 library;
 
-import '../domain/models/prescription.dart';
+import '../domain/prescription.dart';
 
 class PrescriptionRepository {
   // TODO: Initialize with database/path configuration
