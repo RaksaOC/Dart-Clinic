@@ -17,7 +17,8 @@ import '../data/appointment_repo.dart';
 class AppointmentService {
   final AppointmentRepository _appointmentRepository;
 
-  AppointmentService(this._appointmentRepository);
+  AppointmentService([AppointmentRepository? repository])
+    : _appointmentRepository = repository ?? AppointmentRepository();
 
   /// Create a new appointment
   AppointmentModel? createAppointment({
@@ -117,5 +118,10 @@ class AppointmentService {
   List<AppointmentModel> getByStatus(AppointmentStatus status) {
     final appointments = _appointmentRepository.getAll();
     return appointments.where((a) => a.status == status).toList();
+  }
+
+  /// Get appointment by id
+  AppointmentModel? getById(String id) {
+    return _appointmentRepository.getById(id);
   }
 }

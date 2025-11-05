@@ -14,7 +14,8 @@ import '../data/prescription_repo.dart';
 class PrescriptionService {
   final PrescriptionRepository _prescriptionRepository;
 
-  PrescriptionService(this._prescriptionRepository);
+  PrescriptionService([PrescriptionRepository? repository])
+    : _prescriptionRepository = repository ?? PrescriptionRepository();
 
   /// Issue a new prescription
   PrescriptionModel? issuePrescription({
@@ -57,5 +58,10 @@ class PrescriptionService {
     return prescriptions
         .where((prescription) => prescription.doctorId == doctorId)
         .toList();
+  }
+
+  /// Get prescription by id
+  PrescriptionModel? getById(String id) {
+    return _prescriptionRepository.getById(id);
   }
 }

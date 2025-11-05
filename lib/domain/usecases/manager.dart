@@ -4,6 +4,8 @@
 /// UI layer interacts with this class, which delegates to services.
 library;
 
+import 'package:dart_clinic/service/session_service.dart';
+
 import '../models/manager.dart';
 import '../models/room.dart';
 import '../models/doctor.dart';
@@ -15,39 +17,28 @@ import '../../service/doctor_service.dart';
 import '../../service/patient_service.dart';
 import '../../service/admission_service.dart';
 import '../../service/manager_service.dart';
-import '../../data/room_repo.dart';
-import '../../data/admission_repo.dart';
+// Repositories are not referenced here; this layer talks to services only.
 
 class Manager {
-  final ManagerModel? _currentManager;
+  final ManagerModel _currentManager;
   final RoomService _roomService;
   final DoctorService _doctorService;
   final PatientService _patientService;
   final AdmissionService _admissionService;
   final ManagerService _managerService;
-  final RoomRepository _roomRepository;
-  final AdmissionRepository _admissionRepository;
 
   Manager({
-    ManagerModel? currentManager,
-    required RoomService roomService,
-    required DoctorService doctorService,
-    required PatientService patientService,
-    required AdmissionService admissionService,
-    required ManagerService managerService,
-    required RoomRepository roomRepository,
-    required AdmissionRepository admissionRepository,
-  }) : _currentManager = currentManager,
-       _roomService = roomService,
-       _doctorService = doctorService,
-       _patientService = patientService,
-       _admissionService = admissionService,
-       _managerService = managerService,
-       _roomRepository = roomRepository,
-       _admissionRepository = admissionRepository;
-
-  /// Get current manager model
-  ManagerModel? get currentManager => _currentManager;
+    RoomService? roomService,
+    DoctorService? doctorService,
+    PatientService? patientService,
+    AdmissionService? admissionService,
+    ManagerService? managerService,
+  }) : _currentManager = SessionService().currentManager!,
+       _roomService = roomService ?? RoomService(),
+       _doctorService = doctorService ?? DoctorService(),
+       _patientService = patientService ?? PatientService(),
+       _admissionService = admissionService ?? AdmissionService(),
+       _managerService = managerService ?? ManagerService();
 
   // ========== Manager Authentication & Management ==========
 
@@ -151,7 +142,7 @@ class Manager {
 
   /// Update room information
   bool updateRoom(RoomModel room) {
-    return _roomRepository.update(room);
+    return _roomService.updateRoom(room);
   }
 
   /// Delete a room
@@ -161,7 +152,7 @@ class Manager {
     if (room != null && room.isOccupied) {
       return false; // Cannot delete occupied room
     }
-    return _roomRepository.delete(roomId);
+    return _roomService.deleteRoom(roomId);
   }
 
   /// Get occupancy statistics
@@ -313,7 +304,7 @@ class Manager {
 
   /// Get admission by ID
   AdmissionModel? getAdmissionById(String admissionId) {
-    return _admissionRepository.getById(admissionId);
+    return _admissionService.getById(admissionId);
   }
 
   /// Get all admissions

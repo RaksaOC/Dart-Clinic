@@ -19,7 +19,11 @@ class AdmissionService {
   final AdmissionRepository _admissionRepository;
   final RoomRepository _roomRepository;
 
-  AdmissionService(this._admissionRepository, this._roomRepository);
+  AdmissionService([
+    AdmissionRepository? admissionRepository,
+    RoomRepository? roomRepository,
+  ]) : _admissionRepository = admissionRepository ?? AdmissionRepository(),
+       _roomRepository = roomRepository ?? RoomRepository();
 
   /// Admit a patient to a room
   AdmissionModel? admitPatient({
@@ -134,5 +138,10 @@ class AdmissionService {
     } catch (e) {
       return null;
     }
+  }
+
+  /// Get admission by id
+  AdmissionModel? getById(String id) {
+    return _admissionRepository.getById(id);
   }
 }

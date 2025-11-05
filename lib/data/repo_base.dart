@@ -11,7 +11,9 @@ abstract class RepositoryBase<T> {
   final String dbPath;
   bool _initialized = false;
 
-  RepositoryBase(this.dbPath);
+  RepositoryBase(this.dbPath) {
+    initialize();
+  }
 
   /// Abstract methods - must be implemented by child classes
   Map<String, dynamic> toJson(T entity);

@@ -5,12 +5,12 @@ library;
 
 import 'package:prompts/prompts.dart' as prompts;
 import '../../domain/models/patient.dart';
-import '../../domain/usecases/manager.dart' as manager_use_case;
+import '../../domain/usecases/manager.dart';
 
 class ManagePatients {
-  final manager_use_case.Manager _manager;
+  final Manager _manager;
 
-  ManagePatients(this._manager);
+  ManagePatients() : _manager = Manager();
 
   void display() {
     while (true) {

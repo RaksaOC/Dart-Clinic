@@ -5,12 +5,12 @@ library;
 
 import 'package:prompts/prompts.dart' as prompts;
 import '../../domain/models/admission.dart';
-import '../../domain/usecases/manager.dart' as manager_use_case;
+import '../../domain/usecases/manager.dart';
 
 class ManageAdmissions {
-  final manager_use_case.Manager _manager;
+  final Manager _manager;
 
-  ManageAdmissions(this._manager);
+  ManageAdmissions() : _manager = Manager();
 
   void display() {
     while (true) {

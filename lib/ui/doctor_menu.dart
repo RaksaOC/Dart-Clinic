@@ -8,52 +8,45 @@
 library;
 
 import 'package:prompts/prompts.dart' as prompts;
-import '../domain/models/doctor.dart';
-import 'main_menu.dart';
+import 'package:dart_clinic/service/session_service.dart';
+import 'doctor/manage_appointments.dart';
+import 'doctor/manage_prescriptions.dart';
+import 'doctor/search_patients.dart';
 
 class DoctorMenu {
-  DoctorModel? currentDoctor;
-
   /// Display the doctor menu and handle operations
-  void display(MainMenu mainMenu) {
-    // First, authenticate the doctor
+  void display() {
     if (!_login()) {
-      return; // Return to main menu if login fails
+      return;
     }
 
     while (true) {
       print('\n' + '-' * 50);
       print('DOCTOR MENU');
-      print('Logged in as: ${currentDoctor?.name ?? "Unknown"}');
+      print(
+        'Logged in as: ${SessionService().currentDoctor?.name ?? "Unknown"}',
+      );
       print('-' * 50);
 
       final choice = prompts.choose('\nWhat would you like to do?', [
-        'View My Appointments',
-        'Create Appointment',
-        'Issue Prescription',
-        'View Patient History',
-        'Cancel Appointment',
+        'Manage Appointments',
+        'Manage Prescriptions',
+        'Manage Patients',
         'Logout',
       ]);
 
       switch (choice) {
-        case 'View My Appointments':
-          _viewMyAppointments();
+        case 'Manage Appointments':
+          ManageAppointments().display();
           break;
-        case 'Create Appointment':
-          _createAppointment();
+        case 'Manage Prescriptions':
+          ManagePrescriptions().display();
           break;
-        case 'Issue Prescription':
-          _issuePrescription();
-          break;
-        case 'View Patient History':
-          _viewPatientHistory();
-          break;
-        case 'Cancel Appointment':
-          _cancelAppointment();
+        case 'Manage Patients':
+          SearchPatients().display();
           break;
         case 'Logout':
-          currentDoctor = null;
+          SessionService().logout();
           print('\n👋 Logged out successfully!\n');
           return;
       }
@@ -67,7 +60,7 @@ class DoctorMenu {
       print('👨‍⚕️  DOCTOR PORTAL LOGIN  👨‍⚕️');
       print('=' * 50);
 
-      final email = prompts.get('Enter your email (or type -b to go back)');
+      final email = prompts.get('Enter your email');
 
       if (email.trim() == '-b') {
         return false;
@@ -75,21 +68,11 @@ class DoctorMenu {
 
       final password = prompts.get('Enter your password');
 
-      // TODO: Implement actual authentication
-      // For now, use mock credentials
-      if (email == 'doctor@hospital.com' && password == 'doctor123') {
-        currentDoctor = DoctorModel(
-          id: 'D001',
-          name: 'Dr. John Doe',
-          specialization: 'General Medicine',
-          phoneNumber: '555-0101',
-          email: email,
-          address: '123 Main St, Anytown, USA',
-          age: 30,
-          gender: 'Male',
-          password: password,
+      if (email.isNotEmpty && password.isNotEmpty) {
+        SessionService().loginDoctor(email, password);
+        print(
+          '\n✅ Login successful! Welcome, ${SessionService().currentDoctor!.name}',
         );
-        print('\n✅ Login successful! Welcome, ${currentDoctor!.name}');
         return true;
       } else {
         print('\n❌ Invalid credentials. Please try again.\n');
@@ -99,53 +82,5 @@ class DoctorMenu {
         }
       }
     }
-  }
-
-  /// Display all appointments for the logged-in doctor
-  void _viewMyAppointments() {
-    print('\n📅 VIEW MY APPOINTMENTS');
-    print('-' * 50);
-    // TODO: Fetch and display appointments from appointment service
-    print('\n⏳ Feature coming soon...');
-  }
-
-  /// Create a new appointment
-  void _createAppointment() {
-    print('\n📝 CREATE APPOINTMENT');
-    print('-' * 50);
-    // TODO: Collect appointment details from user
-    // TODO: Validate input
-    // TODO: Create appointment via appointment service
-    print('\n⏳ Feature coming soon...');
-  }
-
-  /// Issue a prescription to a patient
-  void _issuePrescription() {
-    print('\n💊 ISSUE PRESCRIPTION');
-    print('-' * 50);
-    // TODO: Collect prescription details from user
-    // TODO: Validate input
-    // TODO: Create prescription via prescription service
-    print('\n⏳ Feature coming soon...');
-  }
-
-  /// View a patient's medical history
-  void _viewPatientHistory() {
-    print('\n📋 VIEW PATIENT HISTORY');
-    print('-' * 50);
-    // TODO: Request patient ID from user
-    // TODO: Fetch patient history
-    // TODO: Display appointments and prescriptions
-    print('\n⏳ Feature coming soon...');
-  }
-
-  /// Cancel an appointment
-  void _cancelAppointment() {
-    print('\n❌ CANCEL APPOINTMENT');
-    print('-' * 50);
-    // TODO: Request appointment ID from user
-    // TODO: Validate cancellation rules
-    // TODO: Cancel via appointment service
-    print('\n⏳ Feature coming soon...');
   }
 }

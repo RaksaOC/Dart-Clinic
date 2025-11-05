@@ -13,7 +13,7 @@ class MainMenu {
   final DoctorMenu doctorMenu;
   final ManagerMenu managerMenu;
 
-  MainMenu({required this.doctorMenu, required this.managerMenu});
+  MainMenu() : doctorMenu = DoctorMenu(), managerMenu = ManagerMenu();
 
   /// Display the main menu and handle user navigation
   void display() {
@@ -27,11 +27,11 @@ class MainMenu {
 
     switch (role) {
       case 'Doctor Portal':
-        doctorMenu.display(this);
+        doctorMenu.display();
         display(); // Return to main menu after logout
         break;
       case 'Manager Portal':
-        managerMenu.display(this);
+        managerMenu.display();
         display(); // Return to main menu after logout
         break;
       case 'Exit':

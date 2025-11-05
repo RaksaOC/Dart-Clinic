@@ -13,27 +13,8 @@ import '../data/manager_repo.dart';
 class ManagerService {
   final ManagerRepository _managerRepository;
 
-  ManagerService(this._managerRepository);
-
-  /// Get all managers
-  List<ManagerModel> getAllManagers() {
-    return _managerRepository.getAll();
-  }
-
-  /// Get manager by ID
-  ManagerModel? getManagerById(String managerId) {
-    return _managerRepository.getById(managerId);
-  }
-
-  /// Find manager by email
-  ManagerModel? findManagerByEmail(String email) {
-    final managers = _managerRepository.getAll();
-    try {
-      return managers.firstWhere((manager) => manager.email == email);
-    } catch (e) {
-      return null;
-    }
-  }
+  ManagerService([ManagerRepository? repository])
+    : _managerRepository = repository ?? ManagerRepository();
 
   /// Authenticate manager
   ManagerModel? authenticateManager(String email, String password) {
@@ -78,5 +59,25 @@ class ManagerService {
   /// Delete a manager
   bool deleteManager(String managerId) {
     return _managerRepository.delete(managerId);
+  }
+
+  /// Get all managers
+  List<ManagerModel> getAllManagers() {
+    return _managerRepository.getAll();
+  }
+
+  /// Get manager by ID
+  ManagerModel? getManagerById(String managerId) {
+    return _managerRepository.getById(managerId);
+  }
+
+  /// Find manager by email
+  ManagerModel? findManagerByEmail(String email) {
+    final managers = _managerRepository.getAll();
+    try {
+      return managers.firstWhere((manager) => manager.email == email);
+    } catch (e) {
+      return null;
+    }
   }
 }

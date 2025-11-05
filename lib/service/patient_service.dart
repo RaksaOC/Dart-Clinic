@@ -14,7 +14,8 @@ import '../data/patient_repo.dart';
 class PatientService {
   final PatientRepository _patientRepository;
 
-  PatientService(this._patientRepository);
+  PatientService([PatientRepository? repository])
+    : _patientRepository = repository ?? PatientRepository();
 
   /// Get all patients
   List<PatientModel> getAllPatients() {

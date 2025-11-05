@@ -5,12 +5,12 @@ library;
 
 import 'package:prompts/prompts.dart' as prompts;
 import '../../domain/models/room.dart';
-import '../../domain/usecases/manager.dart' as manager_use_case;
+import '../../domain/usecases/manager.dart';
 
 class ManageRooms {
-  final manager_use_case.Manager _manager;
+  final Manager _manager;
 
-  ManageRooms(this._manager);
+  ManageRooms() : _manager = Manager();
 
   void display() {
     while (true) {

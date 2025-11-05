@@ -14,7 +14,8 @@ import '../data/room_repo.dart';
 class RoomService {
   final RoomRepository _roomRepository;
 
-  RoomService(this._roomRepository);
+  RoomService([RoomRepository? repository])
+    : _roomRepository = repository ?? RoomRepository();
 
   /// Get all available rooms
   List<RoomModel> getAvailableRooms() {
@@ -75,5 +76,15 @@ class RoomService {
       'availableRooms': availableRooms,
       'overallOccupancy': overallOccupancy,
     };
+  }
+
+  /// Update existing room
+  bool updateRoom(RoomModel room) {
+    return _roomRepository.update(room);
+  }
+
+  /// Delete room by id
+  bool deleteRoom(String roomId) {
+    return _roomRepository.delete(roomId);
   }
 }

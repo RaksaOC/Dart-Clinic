@@ -8,22 +8,17 @@ library;
 
 import 'package:prompts/prompts.dart' as prompts;
 import '../domain/models/manager.dart';
-import '../domain/usecases/manager.dart' as manager_use_case;
-import 'main_menu.dart';
+import '../domain/usecases/manager.dart';
 import 'manager/manage_rooms.dart';
 import 'manager/manage_doctors.dart';
 import 'manager/manage_patients.dart';
 import 'manager/manage_admissions.dart';
 import 'manager/manage_managers.dart';
+import 'package:dart_clinic/service/session_service.dart';
 
 class ManagerMenu {
-  final manager_use_case.Manager _manager;
-  ManagerModel? currentManager;
-
-  ManagerMenu({required manager_use_case.Manager manager}) : _manager = manager;
-
   /// Display the manager menu and handle operations
-  void display(MainMenu mainMenu) {
+  void display() {
     // First, authenticate the manager
     if (!_login()) {
       return; // Return to main menu if login fails
@@ -32,7 +27,9 @@ class ManagerMenu {
     while (true) {
       print('\n' + '=' * 50);
       print('MANAGER DASHBOARD');
-      print('Logged in as: ${currentManager?.name ?? "Unknown"}');
+      print(
+        'Logged in as: ${SessionService().currentManager?.name ?? "Unknown"}',
+      );
       print('=' * 50);
 
       final choice = prompts.choose('\nWhat would you like to do?', [
@@ -46,22 +43,22 @@ class ManagerMenu {
 
       switch (choice) {
         case 'Manage Rooms':
-          ManageRooms(_manager).display();
+          ManageRooms().display();
           break;
         case 'Manage Doctors':
-          ManageDoctors(_manager).display();
+          ManageDoctors().display();
           break;
         case 'Manage Patients':
-          ManagePatients(_manager).display();
+          ManagePatients().display();
           break;
         case 'Manage Admissions':
-          ManageAdmissions(_manager).display();
+          ManageAdmissions().display();
           break;
         case 'Manage Managers':
-          ManageManagers(_manager, currentManager).display();
+          ManageManagers().display();
           break;
         case 'Logout':
-          currentManager = null;
+          SessionService().logout();
           print('\n👋 Logged out successfully!\n');
           return;
       }
@@ -83,10 +80,10 @@ class ManagerMenu {
 
       final password = prompts.get('Enter your password');
 
-      currentManager = _manager.authenticateManager(email.trim(), password);
+      SessionService().loginManager(email.trim(), password);
 
-      if (currentManager != null) {
-        print('\n✅ Login successful! Welcome, ${currentManager!.name}');
+      if (SessionService().currentManager != null) {
+        print('\n✅ Login successful! Welcome, ${SessionService().currentManager!.name}');
         return true;
       } else {
         print('\n❌ Invalid credentials. Please try again.\n');

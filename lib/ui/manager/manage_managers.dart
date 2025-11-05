@@ -5,13 +5,13 @@ library;
 
 import 'package:prompts/prompts.dart' as prompts;
 import '../../domain/models/manager.dart';
-import '../../domain/usecases/manager.dart' as manager_use_case;
+import '../../domain/usecases/manager.dart';
+import 'package:dart_clinic/service/session_service.dart';
 
 class ManageManagers {
-  final manager_use_case.Manager _manager;
-  final ManagerModel? currentManager;
+  final Manager _manager;
 
-  ManageManagers(this._manager, this.currentManager);
+  ManageManagers() : _manager = Manager();
 
   void display() {
     while (true) {
@@ -157,7 +157,7 @@ class ManageManagers {
     }
 
     // Prevent deleting yourself
-    if (currentManager != null && manager.id == currentManager!.id) {
+    if (SessionService().currentManager != null && manager.id == SessionService().currentManager!.id) {
       print('\n❌ Cannot delete yourself.');
       return;
     }

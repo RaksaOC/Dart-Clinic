@@ -4,6 +4,8 @@
 /// UI layer interacts with this class, which delegates to services.
 library;
 
+import 'package:dart_clinic/service/session_service.dart';
+
 import '../models/doctor.dart';
 import '../models/appointment.dart';
 import '../models/prescription.dart';
@@ -12,30 +14,22 @@ import '../models/status.dart';
 import '../../service/appointment_service.dart';
 import '../../service/prescription_service.dart';
 import '../../service/patient_service.dart';
-import '../../data/appointment_repo.dart';
-import '../../data/prescription_repo.dart';
+// Repositories are not referenced here; this layer talks to services only.
 
 class Doctor {
   final DoctorModel _currentDoctor;
   final AppointmentService _appointmentService;
   final PrescriptionService _prescriptionService;
   final PatientService _patientService;
-  final AppointmentRepository _appointmentRepository;
-  final PrescriptionRepository _prescriptionRepository;
-
+  // Note: No repositories or extra services needed here
   Doctor({
-    required DoctorModel currentDoctor,
-    required AppointmentService appointmentService,
-    required PrescriptionService prescriptionService,
-    required PatientService patientService,
-    required AppointmentRepository appointmentRepository,
-    required PrescriptionRepository prescriptionRepository,
-  }) : _currentDoctor = currentDoctor,
-       _appointmentService = appointmentService,
-       _prescriptionService = prescriptionService,
-       _patientService = patientService,
-       _appointmentRepository = appointmentRepository,
-       _prescriptionRepository = prescriptionRepository;
+    AppointmentService? appointmentService,
+    PrescriptionService? prescriptionService,
+    PatientService? patientService,
+  }) : _currentDoctor = SessionService().currentDoctor!,
+       _appointmentService = appointmentService ?? AppointmentService(),
+       _prescriptionService = prescriptionService ?? PrescriptionService(),
+       _patientService = patientService ?? PatientService();
 
   /// Get current doctor model
   DoctorModel get currentDoctor => _currentDoctor;
@@ -68,7 +62,7 @@ class Doctor {
 
   /// Get appointment by ID
   AppointmentModel? getAppointmentById(String appointmentId) {
-    final appointment = _appointmentRepository.getById(appointmentId);
+    final appointment = _appointmentService.getById(appointmentId);
     // Verify appointment belongs to this doctor
     if (appointment != null && appointment.doctorId == _currentDoctor.id) {
       return appointment;
@@ -78,7 +72,11 @@ class Doctor {
 
   /// Get all appointments (all doctors)
   List<AppointmentModel> getAllAppointments() {
-    return _appointmentRepository.getAll();
+    // Expose all via service if needed; otherwise keep using doctor-scoped APIs
+    return _appointmentService.getUpcomingAppointments(
+      DateTime.fromMillisecondsSinceEpoch(0),
+      DateTime.now().add(const Duration(days: 3650)),
+    );
   }
 
   /// Get my appointments
@@ -197,7 +195,7 @@ class Doctor {
 
   /// Get prescription by ID
   PrescriptionModel? getPrescriptionById(String prescriptionId) {
-    final prescription = _prescriptionRepository.getById(prescriptionId);
+    final prescription = _prescriptionService.getById(prescriptionId);
     // Verify prescription belongs to this doctor
     if (prescription != null && prescription.doctorId == _currentDoctor.id) {
       return prescription;
@@ -207,7 +205,8 @@ class Doctor {
 
   /// Get all prescriptions (all doctors)
   List<PrescriptionModel> getAllPrescriptions() {
-    return _prescriptionRepository.getAll();
+    // No global list needed; provide my prescriptions instead
+    return getMyPrescriptions();
   }
 
   /// Get patient prescriptions
@@ -220,6 +219,8 @@ class Doctor {
     final doctorId = _currentDoctor.id;
     return _prescriptionService.getDoctorPrescriptions(doctorId);
   }
+
+  // Authentication is out of scope here; handled by separate flows
 
   /// Get prescriptions for a patient that I issued
   List<PrescriptionModel> getMyPrescriptionsForPatient(String patientId) {
