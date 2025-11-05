@@ -17,48 +17,62 @@ class RoomService {
   RoomService(this._roomRepository);
 
   /// Get all available rooms
-  Future<List<Room>> getAvailableRooms() async {
-    final rooms = await _roomRepository.getAll();
-    return rooms.where((room) => room.isAvailable).toList();
+  List<Room> getAvailableRooms() {
+    final rooms = _roomRepository.getAll();
+    return rooms.where((room) => !room.isOccupied).toList();
   }
 
   /// Get all rooms
-  Future<List<Room>> getAllRooms() async {
-    return await _roomRepository.getAll();
+  List<Room> getAllRooms() {
+    return _roomRepository.getAll();
   }
 
   /// Get rooms by type
-  Future<List<Room>> getRoomsByType(String roomType) async {
-    return await _roomRepository.getByType(roomType);
+  List<Room> getRoomsByType(String roomType) {
+    final rooms = _roomRepository.getAll();
+    return rooms.where((room) => room.roomType == roomType).toList();
   }
 
   /// Get room by ID
-  Future<Room?> getRoomById(String roomId) async {
-    return await _roomRepository.getById(roomId);
+  Room? getRoomById(String roomId) {
+    return _roomRepository.getById(roomId);
+  }
+
+  /// Create a new room
+  Room? createRoom({
+    required String roomId,
+    required String roomNumber,
+    required String roomType,
+    required double dailyRate,
+    String? notes,
+  }) {
+    final room = Room(
+      id: roomId,
+      roomNumber: roomNumber,
+      roomType: roomType,
+      dailyRate: dailyRate,
+      isOccupied: false,
+      notes: notes,
+    );
+    return _roomRepository.create(room);
   }
 
   /// Get occupancy statistics
-  Future<Map<String, dynamic>> getOccupancyStats() async {
-    final rooms = await _roomRepository.getAll();
+  Map<String, dynamic> getOccupancyStats() {
+    final rooms = _roomRepository.getAll();
 
     int totalRooms = rooms.length;
-    int totalBeds = 0;
-    int occupiedBeds = 0;
+    int occupiedRooms = rooms.where((room) => room.isOccupied).length;
+    int availableRooms = totalRooms - occupiedRooms;
 
-    for (var room in rooms) {
-      totalBeds += room.totalBeds;
-      occupiedBeds += room.occupiedBeds;
-    }
-
-    final overallOccupancy = totalBeds > 0
-        ? (occupiedBeds / totalBeds) * 100
+    final overallOccupancy = totalRooms > 0
+        ? (occupiedRooms / totalRooms) * 100
         : 0.0;
 
     return {
       'totalRooms': totalRooms,
-      'totalBeds': totalBeds,
-      'occupiedBeds': occupiedBeds,
-      'availableBeds': totalBeds - occupiedBeds,
+      'occupiedRooms': occupiedRooms,
+      'availableRooms': availableRooms,
       'overallOccupancy': overallOccupancy,
     };
   }

@@ -20,9 +20,6 @@ class PatientRepository extends RepositoryBase<Patient> {
       'phoneNumber': entity.phoneNumber,
       'email': entity.email,
       'address': entity.address,
-      'bloodType': entity.bloodType,
-      'allergies': entity.allergies,
-      'isAdmitted': entity.isAdmitted,
     };
   }
 
@@ -36,30 +33,6 @@ class PatientRepository extends RepositoryBase<Patient> {
       phoneNumber: json['phoneNumber'] as String,
       email: json['email'] as String,
       address: json['address'] as String,
-      bloodType: json['bloodType'] as String?,
-      allergies: json['allergies'] as String?,
-      isAdmitted: json['isAdmitted'] as bool,
     );
-  }
-
-  /// Search patients by name
-  Future<List<Patient>> getByName(String name) async {
-    final patients = await loadAll();
-    final lowerName = name.toLowerCase();
-    return patients
-        .where((patient) => patient.name.toLowerCase().contains(lowerName))
-        .toList();
-  }
-
-  /// Get admitted patients
-  Future<List<Patient>> getAdmittedPatients() async {
-    final patients = await loadAll();
-    return patients.where((patient) => patient.isAdmitted).toList();
-  }
-
-  /// Get patients by gender
-  Future<List<Patient>> getByGender(String gender) async {
-    final patients = await loadAll();
-    return patients.where((patient) => patient.gender == gender).toList();
   }
 }

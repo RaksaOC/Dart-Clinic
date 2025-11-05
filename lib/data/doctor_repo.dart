@@ -18,6 +18,10 @@ class DoctorRepository extends RepositoryBase<Doctor> {
       'specialization': entity.specialization,
       'phoneNumber': entity.phoneNumber,
       'email': entity.email,
+      'address': entity.address,
+      'age': entity.age,
+      'gender': entity.gender,
+      'password': entity.password,
     };
   }
 
@@ -29,23 +33,10 @@ class DoctorRepository extends RepositoryBase<Doctor> {
       specialization: json['specialization'] as String,
       phoneNumber: json['phoneNumber'] as String,
       email: json['email'] as String,
+      address: json['address'] as String,
+      age: json['age'] as int,
+      gender: json['gender'] as String,
+      password: json['password'] as String,
     );
-  }
-
-  /// Get doctors by specialization
-  Future<List<Doctor>> getBySpecialization(String specialization) async {
-    final doctors = await loadAll();
-    return doctors
-        .where((doctor) => doctor.specialization == specialization)
-        .toList();
-  }
-
-  /// Search doctors by name
-  Future<List<Doctor>> getByName(String name) async {
-    final doctors = await loadAll();
-    final lowerName = name.toLowerCase();
-    return doctors
-        .where((doctor) => doctor.name.toLowerCase().contains(lowerName))
-        .toList();
   }
 }

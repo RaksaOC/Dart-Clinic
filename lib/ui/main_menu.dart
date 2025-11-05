@@ -1,19 +1,19 @@
 /// Main Menu
 ///
 /// Provides the primary entry point CLI interface for the Hospital Management System.
-/// Allows users to navigate to different role-based menus (Doctor, Admin, Patient).
+/// Allows users to navigate to different role-based menus (Doctor, Manager).
 library;
 
 import 'package:prompts/prompts.dart' as prompts;
 import 'dart:io';
 import 'doctor_menu.dart';
-import 'admin_menu.dart';
+import 'manager_menu.dart';
 
 class MainMenu {
   final DoctorMenu doctorMenu;
-  final AdminMenu adminMenu;
+  final ManagerMenu managerMenu;
 
-  MainMenu({required this.doctorMenu, required this.adminMenu});
+  MainMenu({required this.doctorMenu, required this.managerMenu});
 
   /// Display the main menu and handle user navigation
   void display() {
@@ -21,7 +21,7 @@ class MainMenu {
 
     final role = prompts.choose('\nSelect a portal:', [
       'Doctor Portal',
-      'Admin Portal',
+      'Manager Portal',
       'Exit',
     ]);
 
@@ -30,8 +30,8 @@ class MainMenu {
         doctorMenu.display(this);
         display(); // Return to main menu after logout
         break;
-      case 'Admin Portal':
-        adminMenu.display(this);
+      case 'Manager Portal':
+        managerMenu.display(this);
         display(); // Return to main menu after logout
         break;
       case 'Exit':

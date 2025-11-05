@@ -84,6 +84,10 @@ class DoctorMenu {
           specialization: 'General Medicine',
           phoneNumber: '555-0101',
           email: email,
+          address: '123 Main St, Anytown, USA',
+          age: 30,
+          gender: 'Male',
+          password: password,
         );
         print('\n✅ Login successful! Welcome, ${currentDoctor!.name}');
         return true;

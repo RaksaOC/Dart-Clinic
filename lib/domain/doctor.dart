@@ -4,18 +4,20 @@
 /// and capabilities for managing appointments and prescriptions.
 library;
 
-class Doctor {
-  final String id;
-  final String name;
+import 'package:dart_clinic/domain/staff.dart';
+
+class Doctor extends Staff {
   final String specialization;
-  final String phoneNumber;
-  final String email;
 
   Doctor({
-    required this.id,
-    required this.name,
+    required super.id,
+    required super.name,
+    required super.phoneNumber,
+    required super.email,
+    required super.address,
+    required super.age,
+    required super.gender,
     required this.specialization,
-    required this.phoneNumber,
-    required this.email,
+    required super.password,
   });
 }

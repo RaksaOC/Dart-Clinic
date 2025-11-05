@@ -1,27 +1,24 @@
 /// Room domain model
 ///
-/// Represents a room in the hospital with capacity information
-/// and occupied status tracking.
+/// Represents a room in the hospital. One room = one patient (no wards).
 library;
 
 class Room {
   final String id;
   final String roomNumber;
   final String roomType; // general, private, ICU, emergency
-  final int totalBeds;
-  final int occupiedBeds;
   final double dailyRate;
-  final bool isAvailable;
+  final bool isOccupied;
+  final String? patientId; // ID of patient currently in this room (if occupied)
   final String? notes;
 
   Room({
     required this.id,
     required this.roomNumber,
     required this.roomType,
-    required this.totalBeds,
-    required this.occupiedBeds,
     required this.dailyRate,
-    required this.isAvailable,
+    required this.isOccupied,
+    this.patientId,
     this.notes,
   });
 }

@@ -17,7 +17,7 @@ class PrescriptionService {
   PrescriptionService(this._prescriptionRepository);
 
   /// Issue a new prescription
-  Future<Prescription?> issuePrescription({
+  Prescription? issuePrescription({
     required String prescriptionId,
     required String doctorId,
     required String patientId,
@@ -27,7 +27,7 @@ class PrescriptionService {
     required int durationDays,
     required String instructions,
     String? notes,
-  }) async {
+  }) {
     final prescription = Prescription(
       id: prescriptionId,
       doctorId: doctorId,
@@ -38,65 +38,24 @@ class PrescriptionService {
       durationDays: durationDays,
       instructions: instructions,
       issueDate: DateTime.now(),
-      status: 'active',
       notes: notes,
     );
-    return await _prescriptionRepository.create(prescription);
-  }
-
-  /// Cancel an active prescription
-  Future<bool> cancelPrescription(String prescriptionId) async {
-    final prescription = await _prescriptionRepository.getById(prescriptionId);
-    if (prescription == null || prescription.status != 'active') {
-      return false;
-    }
-
-    final cancelledPrescription = Prescription(
-      id: prescription.id,
-      doctorId: prescription.doctorId,
-      patientId: prescription.patientId,
-      medicationName: prescription.medicationName,
-      dosage: prescription.dosage,
-      frequency: prescription.frequency,
-      durationDays: prescription.durationDays,
-      instructions: prescription.instructions,
-      issueDate: prescription.issueDate,
-      status: 'cancelled',
-      notes: prescription.notes,
-    );
-
-    return await _prescriptionRepository.update(cancelledPrescription);
+    return _prescriptionRepository.create(prescription);
   }
 
   /// Get all prescriptions for a patient
-  Future<List<Prescription>> getPatientPrescriptions(String patientId) async {
-    return await _prescriptionRepository.getByPatientId(patientId);
-  }
-
-  /// Get active prescriptions for a patient
-  Future<List<Prescription>> getActivePrescriptions(String patientId) async {
-    return await _prescriptionRepository.getActiveByPatientId(patientId);
+  List<Prescription> getPatientPrescriptions(String patientId) {
+    final prescriptions = _prescriptionRepository.getAll();
+    return prescriptions
+        .where((prescription) => prescription.patientId == patientId)
+        .toList();
   }
 
   /// Get all prescriptions for a doctor
-  Future<List<Prescription>> getDoctorPrescriptions(String doctorId) async {
-    return await _prescriptionRepository.getByDoctorId(doctorId);
-  }
-
-  /// Get prescriptions by status
-  Future<List<Prescription>> getByStatus(String status) async {
-    return await _prescriptionRepository.getByStatus(status);
-  }
-
-  /// Get expired prescriptions
-  Future<List<Prescription>> getExpiredPrescriptions() async {
-    final allPrescriptions = await _prescriptionRepository.getAll();
-    return allPrescriptions
-        .where(
-          (p) => p.issueDate
-              .add(Duration(days: p.durationDays))
-              .isBefore(DateTime.now()),
-        )
+  List<Prescription> getDoctorPrescriptions(String doctorId) {
+    final prescriptions = _prescriptionRepository.getAll();
+    return prescriptions
+        .where((prescription) => prescription.doctorId == doctorId)
         .toList();
   }
 }

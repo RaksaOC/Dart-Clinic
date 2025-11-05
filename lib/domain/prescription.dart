@@ -14,7 +14,6 @@ class Prescription {
   final int durationDays;
   final String instructions;
   final DateTime issueDate;
-  final String status; // active, completed, cancelled
   final String? notes;
 
   Prescription({
@@ -27,7 +26,6 @@ class Prescription {
     required this.durationDays,
     required this.instructions,
     required this.issueDate,
-    required this.status,
     this.notes,
   });
 }

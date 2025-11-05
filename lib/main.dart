@@ -6,13 +6,13 @@ library;
 
 import 'ui/main_menu.dart';
 import 'ui/doctor_menu.dart';
-import 'ui/admin_menu.dart';
+import 'ui/manager_menu.dart';
 
 void main() {
   // Initialize UI components
   final doctorMenu = DoctorMenu();
-  final adminMenu = AdminMenu();
-  final mainMenu = MainMenu(doctorMenu: doctorMenu, adminMenu: adminMenu);
+  final managerMenu = ManagerMenu();
+  final mainMenu = MainMenu(doctorMenu: doctorMenu, managerMenu: managerMenu);
 
   // Start the application
   mainMenu.display();

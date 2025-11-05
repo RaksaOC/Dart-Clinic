@@ -1,13 +1,9 @@
-/// Patient domain model
-///
-/// Represents a patient in the hospital system with personal information,
-/// medical history, and current status (admitted/discharged).
-library;
-
 import 'package:dart_clinic/domain/person.dart';
 
-class Patient extends Person {
-  Patient({
+class Staff extends Person {
+  final String password;
+
+  Staff({
     required super.id,
     required super.name,
     required super.age,
@@ -15,5 +11,6 @@ class Patient extends Person {
     required super.phoneNumber,
     required super.email,
     required super.address,
+    required this.password,
   });
 }

@@ -17,32 +17,40 @@ class PatientService {
   PatientService(this._patientRepository);
 
   /// Get all patients
-  Future<List<Patient>> getAllPatients() async {
-    return await _patientRepository.getAll();
+  List<Patient> getAllPatients() {
+    return _patientRepository.getAll();
   }
 
   /// Get patient by ID
-  Future<Patient?> getPatientById(String patientId) async {
-    return await _patientRepository.getById(patientId);
+  Patient? getPatientById(String patientId) {
+    return _patientRepository.getById(patientId);
   }
 
   /// Search patients by name
-  Future<List<Patient>> searchPatientsByName(String name) async {
-    return await _patientRepository.getByName(name);
+  List<Patient> searchPatientsByName(String name) {
+    final patients = _patientRepository.getAll();
+    final lowerName = name.toLowerCase();
+    return patients
+        .where((patient) => patient.name.toLowerCase().contains(lowerName))
+        .toList();
   }
 
   /// Get admitted patients
-  Future<List<Patient>> getAdmittedPatients() async {
-    return await _patientRepository.getAdmittedPatients();
+  /// Note: This requires checking with AdmissionService for admission status
+  /// For now, returns empty list - admission status is managed separately
+  List<Patient> getAdmittedPatients() {
+    // TODO: Implement by checking AdmissionService for active admissions
+    return [];
   }
 
   /// Get patients by gender
-  Future<List<Patient>> getPatientsByGender(String gender) async {
-    return await _patientRepository.getByGender(gender);
+  List<Patient> getPatientsByGender(String gender) {
+    final patients = _patientRepository.getAll();
+    return patients.where((patient) => patient.gender == gender).toList();
   }
 
   /// Create a new patient
-  Future<Patient?> createPatient({
+  Patient? createPatient({
     required String patientId,
     required String name,
     required int age,
@@ -50,10 +58,7 @@ class PatientService {
     required String phoneNumber,
     required String email,
     required String address,
-    String? bloodType,
-    String? allergies,
-    bool isAdmitted = false,
-  }) async {
+  }) {
     final patient = Patient(
       id: patientId,
       name: name,
@@ -62,66 +67,35 @@ class PatientService {
       phoneNumber: phoneNumber,
       email: email,
       address: address,
-      bloodType: bloodType,
-      allergies: allergies,
-      isAdmitted: isAdmitted,
     );
-    return await _patientRepository.create(patient);
+    return _patientRepository.create(patient);
   }
 
   /// Update patient information
-  Future<bool> updatePatient(Patient patient) async {
-    return await _patientRepository.update(patient);
+  bool updatePatient(Patient patient) {
+    return _patientRepository.update(patient);
   }
 
   /// Delete a patient
-  Future<bool> deletePatient(String patientId) async {
-    return await _patientRepository.delete(patientId);
+  bool deletePatient(String patientId) {
+    return _patientRepository.delete(patientId);
   }
 
   /// Admit a patient
-  Future<bool> admitPatient(String patientId) async {
-    final patient = await _patientRepository.getById(patientId);
-    if (patient == null || patient.isAdmitted) {
-      return false;
-    }
-
-    final admittedPatient = Patient(
-      id: patient.id,
-      name: patient.name,
-      age: patient.age,
-      gender: patient.gender,
-      phoneNumber: patient.phoneNumber,
-      email: patient.email,
-      address: patient.address,
-      bloodType: patient.bloodType,
-      allergies: patient.allergies,
-      isAdmitted: true,
-    );
-
-    return await _patientRepository.update(admittedPatient);
+  /// Note: Admission is now handled by AdmissionService
+  /// This method is deprecated - use AdmissionService.admitPatient instead
+  @Deprecated('Use AdmissionService.admitPatient instead')
+  bool admitPatient(String patientId) {
+    // Admission is now managed by AdmissionService
+    return false;
   }
 
   /// Discharge a patient
-  Future<bool> dischargePatient(String patientId) async {
-    final patient = await _patientRepository.getById(patientId);
-    if (patient == null || !patient.isAdmitted) {
-      return false;
-    }
-
-    final dischargedPatient = Patient(
-      id: patient.id,
-      name: patient.name,
-      age: patient.age,
-      gender: patient.gender,
-      phoneNumber: patient.phoneNumber,
-      email: patient.email,
-      address: patient.address,
-      bloodType: patient.bloodType,
-      allergies: patient.allergies,
-      isAdmitted: false,
-    );
-
-    return await _patientRepository.update(dischargedPatient);
+  /// Note: Discharge is now handled by AdmissionService
+  /// This method is deprecated - use AdmissionService.dischargePatient instead
+  @Deprecated('Use AdmissionService.dischargePatient instead')
+  bool dischargePatient(String patientId) {
+    // Discharge is now managed by AdmissionService
+    return false;
   }
 }

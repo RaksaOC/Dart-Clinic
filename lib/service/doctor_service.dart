@@ -17,50 +17,65 @@ class DoctorService {
   DoctorService(this._doctorRepository);
 
   /// Get all doctors
-  Future<List<Doctor>> getAllDoctors() async {
-    return await _doctorRepository.getAll();
+  List<Doctor> getAllDoctors() {
+    return _doctorRepository.getAll();
   }
 
   /// Get doctor by ID
-  Future<Doctor?> getDoctorById(String doctorId) async {
-    return await _doctorRepository.getById(doctorId);
+  Doctor? getDoctorById(String doctorId) {
+    return _doctorRepository.getById(doctorId);
   }
 
   /// Get doctors by specialization
-  Future<List<Doctor>> getDoctorsBySpecialization(String specialization) async {
-    return await _doctorRepository.getBySpecialization(specialization);
+  List<Doctor> getDoctorsBySpecialization(String specialization) {
+    final doctors = _doctorRepository.getAll();
+    return doctors
+        .where((doctor) => doctor.specialization == specialization)
+        .toList();
   }
 
   /// Search doctors by name
-  Future<List<Doctor>> searchDoctorsByName(String name) async {
-    return await _doctorRepository.getByName(name);
+  List<Doctor> searchDoctorsByName(String name) {
+    final doctors = _doctorRepository.getAll();
+    final lowerName = name.toLowerCase();
+    return doctors
+        .where((doctor) => doctor.name.toLowerCase().contains(lowerName))
+        .toList();
   }
 
   /// Create a new doctor
-  Future<Doctor?> createDoctor({
+  Doctor? createDoctor({
     required String doctorId,
     required String name,
     required String specialization,
     required String phoneNumber,
     required String email,
-  }) async {
+    required String address,
+    required int age,
+    required String gender,
+    required String password,
+  }) {
     final doctor = Doctor(
       id: doctorId,
       name: name,
       specialization: specialization,
       phoneNumber: phoneNumber,
       email: email,
+      address: address,
+      age: age,
+      gender: gender,
+      password: password,
     );
-    return await _doctorRepository.create(doctor);
+    return _doctorRepository.create(doctor);
   }
 
   /// Update a doctor's information
-  Future<bool> updateDoctor(Doctor doctor) async {
-    return await _doctorRepository.update(doctor);
+  bool updateDoctor(Doctor doctor) {
+    return _doctorRepository.update(doctor);
   }
 
   /// Delete a doctor
-  Future<bool> deleteDoctor(String doctorId) async {
-    return await _doctorRepository.delete(doctorId);
+  bool deleteDoctor(String doctorId) {
+    return _doctorRepository.delete(doctorId);
   }
 }

@@ -1,18 +1,19 @@
-/// Admin Menu
+/// Manager Menu
 ///
-/// Provides CLI interface for admin-specific operations including:
-/// - Managing rooms and beds
+/// Provides CLI interface for manager-specific operations including:
+/// - Creating and managing rooms
+/// - Assigning patients to rooms
 /// - Managing medication stock
 /// - Generating reports
 /// - System administration
 library;
 
 import 'package:prompts/prompts.dart' as prompts;
-import '../domain/admin.dart';
+import '../domain/manager.dart';
 import 'main_menu.dart';
 
-class AdminMenu {
-  Admin? currentAdmin;
+class ManagerMenu {
+  Manager? currentManager;
 
   /// Display the admin menu and handle operations
   void display(MainMenu mainMenu) {
@@ -23,12 +24,14 @@ class AdminMenu {
 
     while (true) {
       print('\n' + '-' * 50);
-      print('ADMIN MENU');
-      print('Logged in as: ${currentAdmin?.name ?? "Unknown"}');
+      print('MANAGER MENU');
+      print('Logged in as: ${currentManager?.name ?? "Unknown"}');
       print('-' * 50);
 
       final choice = prompts.choose('\nWhat would you like to do?', [
+        'Create Room',
         'Manage Rooms',
+        'Assign Patient to Room',
         'Manage Medication Stock',
         'Generate Reports',
         'View System Statistics',
@@ -37,8 +40,14 @@ class AdminMenu {
       ]);
 
       switch (choice) {
+        case 'Create Room':
+          _createRoom();
+          break;
         case 'Manage Rooms':
           _manageRooms();
+          break;
+        case 'Assign Patient to Room':
+          _assignPatientToRoom();
           break;
         case 'Manage Medication Stock':
           _manageMedicationStock();
@@ -53,18 +62,18 @@ class AdminMenu {
           _manageUsers();
           break;
         case 'Logout':
-          currentAdmin = null;
+          currentManager = null;
           print('\n👋 Logged out successfully!\n');
           return;
       }
     }
   }
 
-  /// Admin login
+  /// Manager login
   bool _login() {
     while (true) {
       print('\n' + '=' * 50);
-      print('👔 ADMIN PORTAL LOGIN  👔');
+      print('👔 MANAGER PORTAL LOGIN  👔');
       print('=' * 50);
 
       final email = prompts.get('Enter your email (or type -b to go back)');
@@ -77,14 +86,18 @@ class AdminMenu {
 
       // TODO: Implement actual authentication
       // For now, use mock credentials
-      if (email == 'admin@hospital.com' && password == 'admin123') {
-        currentAdmin = Admin(
-          id: 'A001',
-          name: 'Administrator',
+      if (email == 'manager@hospital.com' && password == 'manager123') {
+        currentManager = Manager(
+          id: 'M001',
+          name: 'Manager',
           email: email,
           password: password,
+          age: 30,
+          gender: 'Male',
+          phoneNumber: '555-0101',
+          address: '123 Main St, Anytown, USA',
         );
-        print('\n✅ Login successful! Welcome, ${currentAdmin!.name}');
+        print('\n✅ Login successful! Welcome, ${currentManager!.name}');
         return true;
       } else {
         print('\n❌ Invalid credentials. Please try again.\n');
@@ -94,6 +107,22 @@ class AdminMenu {
         }
       }
     }
+  }
+
+  /// Create a new room
+  void _createRoom() {
+    print('\n🏥 CREATE ROOM');
+    print('-' * 50);
+    // TODO: Implement room creation
+    print('\n⏳ Feature coming soon...');
+  }
+
+  /// Assign patient to room
+  void _assignPatientToRoom() {
+    print('\n🛏️  ASSIGN PATIENT TO ROOM');
+    print('-' * 50);
+    // TODO: Implement patient assignment to room
+    print('\n⏳ Feature coming soon...');
   }
 
   /// Manage rooms
