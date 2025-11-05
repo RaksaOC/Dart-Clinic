@@ -193,7 +193,16 @@ class ManageAdmissions {
   void _viewPatientAdmissionHistory() {
     print('\nPATIENT ADMISSION HISTORY');
     print('-' * 50);
-    final patientId = prompts.get('Enter Patient ID:');
+    // Select patient from list
+    final patients = _patients.getAllPatients();
+    if (patients.isEmpty) {
+      print('\nNo patients found.');
+      return;
+    }
+    final patientOptions = formatCardOptions(patients);
+    final chosen = prompts.choose('Select a patient:', patientOptions);
+    final pIdx = patientOptions.indexOf(chosen!);
+    final patientId = patients[pIdx].id;
     final admissions = _manager.getAdmissionsByPatientId(patientId.trim());
     if (admissions.isEmpty) {
       print('\nNo admission history found for this patient.');
@@ -208,7 +217,16 @@ class ManageAdmissions {
   void _viewRoomAdmissionHistory() {
     print('\nROOM ADMISSION HISTORY');
     print('-' * 50);
-    final roomId = prompts.get('Enter Room ID:');
+    // Select room from list
+    final rooms = _rooms.getAllRooms();
+    if (rooms.isEmpty) {
+      print('\nNo rooms found.');
+      return;
+    }
+    final roomOptions = formatCardOptions(rooms);
+    final chosen = prompts.choose('Select a room:', roomOptions);
+    final rIdx = roomOptions.indexOf(chosen!);
+    final roomId = rooms[rIdx].id;
     final admissions = _manager.getAdmissionsByRoomId(roomId.trim());
     if (admissions.isEmpty) {
       print('\nNo admission history found for this room.');

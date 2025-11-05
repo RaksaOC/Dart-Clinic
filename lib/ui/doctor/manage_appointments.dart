@@ -8,6 +8,7 @@ import '../../domain/models/appointment.dart';
 import '../../domain/controllers/doctor/appointments_controller.dart';
 import 'package:dart_clinic/utils/formatter.dart';
 import 'package:dart_clinic/utils/terminal.dart';
+import '../../domain/controllers/doctor/patients_controller.dart';
 
 class ManageAppointments {
   final AppointmentsController _controller;
@@ -57,7 +58,17 @@ class ManageAppointments {
     print('-' * 50);
 
     try {
-      final patientId = prompts.get('Patient ID:');
+      // Select patient from list
+      final patientsController = PatientsController();
+      final patients = patientsController.getAllPatients();
+      if (patients.isEmpty) {
+        print('\nNo patients found.');
+        return;
+      }
+      final patientOptions = formatCardOptions(patients);
+      final chosenPatient = prompts.choose('Select a patient:', patientOptions);
+      final pIdx = patientOptions.indexOf(chosenPatient!);
+      final patientId = patients[pIdx].id;
       final dateStr = prompts.get('Date & Time (YYYY-MM-DD HH:MM, 24h):');
       final notes = prompts.get('Notes (optional, press Enter to skip):');
 

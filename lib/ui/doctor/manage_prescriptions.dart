@@ -8,6 +8,7 @@ import '../../domain/models/prescription.dart';
 import '../../domain/controllers/doctor/prescriptions_controller.dart';
 import 'package:dart_clinic/utils/formatter.dart';
 import 'package:dart_clinic/utils/terminal.dart';
+import '../../domain/controllers/doctor/patients_controller.dart';
 
 class ManagePrescriptions {
   final PrescriptionsController _controller;
@@ -35,7 +36,7 @@ class ManagePrescriptions {
           TerminalUI.pauseAndClear();
           break;
         case 'View My Prescriptions':
-          _displayPrescriptions(_controller.getMyPrescriptions());
+          _viewMyPrescriptions();
           TerminalUI.pauseAndClear();
           break;
         case 'View Patient Prescriptions':
@@ -56,7 +57,17 @@ class ManagePrescriptions {
     print('\nISSUE PRESCRIPTION');
     print('-' * 50);
     try {
-      final patientId = prompts.get('Patient ID:');
+      // Select patient from list
+      final patientsController = PatientsController();
+      final patients = patientsController.getAllPatients();
+      if (patients.isEmpty) {
+        print('\nNo patients found.');
+        return;
+      }
+      final patientOptions = formatCardOptions(patients);
+      final chosenPatient = prompts.choose('Select a patient:', patientOptions);
+      final pIdx = patientOptions.indexOf(chosenPatient!);
+      final patientId = patients[pIdx].id;
       final medication = prompts.get('Medication Name:');
       final dosage = prompts.get('Dosage (e.g., 500mg):');
       final frequency = prompts.get('Frequency (e.g., 2x/day):');
@@ -94,9 +105,34 @@ class ManagePrescriptions {
   }
 
   void _viewPatientPrescriptions() {
-    final patientId = prompts.get('Patient ID:');
+    // Select patient from list
+    final patientsController = PatientsController();
+    final patients = patientsController.getAllPatients();
+    if (patients.isEmpty) {
+      print('\nNo patients found.');
+      return;
+    }
+    final patientOptions = formatCardOptions(patients);
+    final chosenPatient = prompts.choose('Select a patient:', patientOptions);
+    final pIdx = patientOptions.indexOf(chosenPatient!);
+    final patientId = patients[pIdx].id;
     final list = _controller.getPatientPrescriptions(patientId.trim());
-    _displayPrescriptions(list);
+    final options = formatCardOptions(list);
+    for (final line in options) {
+      print(line);
+    }
+  }
+
+  void _viewMyPrescriptions() {
+    print('\nMY PRESCRIPTIONS');
+    print('-' * 50);
+    final list = _controller.getMyPrescriptions();
+    if (list.isEmpty) {
+      print('\nNo prescriptions.');
+      return;
+    }
+    final options = formatCardOptions(list);
+    for (final line in options) print(line);
   }
 
   void _viewPrescriptionDetails() {
@@ -111,22 +147,9 @@ class ManagePrescriptions {
     final chosen = prompts.choose('Select a prescription:', options);
     final idx = options.indexOf(chosen!);
     final rx = list[idx];
-    _displayPrescriptions([rx]);
-  }
-
-  void _displayPrescriptions(List<PrescriptionModel> list) {
-    if (list.isEmpty) {
-      print('\nNo prescriptions.');
-      return;
-    }
-    print(
-      '\n${'ID'.padRight(10)} ${'Patient'.padRight(10)} ${'Medication'.padRight(20)} ${'Duration'.padRight(10)}',
-    );
-    print('-' * 70);
-    for (final p in list) {
-      print(
-        '${p.id.padRight(10)} ${p.patientId.padRight(10)} ${p.medicationName.padRight(20)} ${p.durationDays.toString().padRight(10)}',
-      );
+    final lines = formatCardOptions([rx]);
+    for (final line in lines) {
+      print(line);
     }
   }
 }
