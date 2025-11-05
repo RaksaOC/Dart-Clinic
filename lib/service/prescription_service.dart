@@ -10,6 +10,7 @@ library;
 
 import '../domain/models/prescription.dart';
 import '../data/prescription_repo.dart';
+import 'package:dart_clinic/service/session_service.dart';
 
 class PrescriptionService {
   final PrescriptionRepository _prescriptionRepository;
@@ -20,7 +21,6 @@ class PrescriptionService {
   /// Issue a new prescription
   PrescriptionModel? issuePrescription({
     required String prescriptionId,
-    required String doctorId,
     required String patientId,
     required String medicationName,
     required String dosage,
@@ -29,9 +29,11 @@ class PrescriptionService {
     required String instructions,
     String? notes,
   }) {
+    final currentDoctor = SessionService().currentDoctor;
+    if (currentDoctor == null) return null;
     final prescription = PrescriptionModel(
       id: prescriptionId,
-      doctorId: doctorId,
+      doctorId: currentDoctor.id,
       patientId: patientId,
       medicationName: medicationName,
       dosage: dosage,
@@ -53,15 +55,23 @@ class PrescriptionService {
   }
 
   /// Get all prescriptions for a doctor
-  List<PrescriptionModel> getDoctorPrescriptions(String doctorId) {
+  List<PrescriptionModel> getMyPrescriptions() {
+    final currentDoctor = SessionService().currentDoctor;
     final prescriptions = _prescriptionRepository.getAll();
+    if (currentDoctor == null) return [];
     return prescriptions
-        .where((prescription) => prescription.doctorId == doctorId)
+        .where((prescription) => prescription.doctorId == currentDoctor.id)
         .toList();
   }
 
   /// Get prescription by id
   PrescriptionModel? getById(String id) {
-    return _prescriptionRepository.getById(id);
+    final p = _prescriptionRepository.getById(id);
+    if (p == null) return null;
+    final currentDoctor = SessionService().currentDoctor;
+    if (currentDoctor != null && p.doctorId != currentDoctor.id) {
+      return null;
+    }
+    return p;
   }
 }

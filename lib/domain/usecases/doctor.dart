@@ -4,9 +4,6 @@
 /// UI layer interacts with this class, which delegates to services.
 library;
 
-import 'package:dart_clinic/service/session_service.dart';
-
-import '../models/doctor.dart';
 import '../models/appointment.dart';
 import '../models/prescription.dart';
 import '../models/patient.dart';
@@ -17,22 +14,17 @@ import '../../service/patient_service.dart';
 // Repositories are not referenced here; this layer talks to services only.
 
 class Doctor {
-  final DoctorModel _currentDoctor;
   final AppointmentService _appointmentService;
   final PrescriptionService _prescriptionService;
   final PatientService _patientService;
-  // Note: No repositories or extra services needed here
+  // Note: No repositories or session here; services handle session
   Doctor({
     AppointmentService? appointmentService,
     PrescriptionService? prescriptionService,
     PatientService? patientService,
-  }) : _currentDoctor = SessionService().currentDoctor!,
-       _appointmentService = appointmentService ?? AppointmentService(),
+  }) : _appointmentService = appointmentService ?? AppointmentService(),
        _prescriptionService = prescriptionService ?? PrescriptionService(),
        _patientService = patientService ?? PatientService();
-
-  /// Get current doctor model
-  DoctorModel get currentDoctor => _currentDoctor;
 
   // ========== Appointment Management ==========
 
@@ -49,40 +41,21 @@ class Doctor {
       return null; // Patient not found
     }
 
-    // Delegate to appointment service
-    final doctorId = _currentDoctor.id;
     return _appointmentService.createAppointment(
       appointmentId: appointmentId,
-      doctorId: doctorId,
       patientId: patientId,
       appointmentDateTime: appointmentDateTime,
       notes: notes,
     );
   }
 
-  /// Get appointment by ID
-  AppointmentModel? getAppointmentById(String appointmentId) {
-    final appointment = _appointmentService.getById(appointmentId);
-    // Verify appointment belongs to this doctor
-    if (appointment != null && appointment.doctorId == _currentDoctor.id) {
-      return appointment;
-    }
-    return null;
-  }
-
-  /// Get all appointments (all doctors)
-  List<AppointmentModel> getAllAppointments() {
-    // Expose all via service if needed; otherwise keep using doctor-scoped APIs
-    return _appointmentService.getUpcomingAppointments(
-      DateTime.fromMillisecondsSinceEpoch(0),
-      DateTime.now().add(const Duration(days: 3650)),
-    );
-  }
-
   /// Get my appointments
   List<AppointmentModel> getMyAppointments() {
-    final doctorId = _currentDoctor.id;
-    return _appointmentService.getDoctorAppointments(doctorId);
+    return _appointmentService.getMyAppointments();
+  }
+
+  AppointmentModel? getAppointmentById(String appointmentId) {
+    return _appointmentService.getById(appointmentId);
   }
 
   /// Get patient appointments
@@ -92,15 +65,6 @@ class Doctor {
 
   /// Cancel an appointment
   bool cancelAppointment(String appointmentId) {
-    // Verify appointment belongs to this doctor
-    final appointments = _appointmentService.getDoctorAppointments(
-      _currentDoctor.id,
-    );
-    appointments.firstWhere(
-      (a) => a.id == appointmentId,
-      orElse: () => throw Exception('Appointment not found'),
-    );
-
     return _appointmentService.cancelAppointment(appointmentId);
   }
 
@@ -122,19 +86,12 @@ class Doctor {
     DateTime startDate,
     DateTime endDate,
   ) {
-    final upcoming = _appointmentService.getUpcomingAppointments(
-      startDate,
-      endDate,
-    );
-    // Filter to only this doctor's appointments
-    final doctorId = _currentDoctor.id;
-    return upcoming.where((a) => a.doctorId == doctorId).toList();
+    return _appointmentService.getMyUpcomingAppointments(startDate, endDate);
   }
 
   /// Get appointments by status
   List<AppointmentModel> getAppointmentsByStatus(AppointmentStatus status) {
-    final myAppointments = getMyAppointments();
-    return myAppointments.where((a) => a.status == status).toList();
+    return _appointmentService.getMyAppointmentsByStatus(status);
   }
 
   /// Get all appointments by status (from service)
@@ -147,14 +104,14 @@ class Doctor {
     final now = DateTime.now();
     final startOfDay = DateTime(now.year, now.month, now.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
-    return getUpcomingAppointments(startOfDay, endOfDay);
+    return _appointmentService.getMyUpcomingAppointments(startOfDay, endOfDay);
   }
 
   /// Get past appointments
   List<AppointmentModel> getPastAppointments() {
-    final myAppointments = getMyAppointments();
     final now = DateTime.now();
-    return myAppointments
+    return _appointmentService
+        .getMyAppointments()
         .where((a) => a.appointmentDateTime.isBefore(now))
         .toList();
   }
@@ -178,11 +135,8 @@ class Doctor {
       return null; // Patient not found
     }
 
-    // Delegate to prescription service
-    final doctorId = _currentDoctor.id;
     return _prescriptionService.issuePrescription(
       prescriptionId: prescriptionId,
-      doctorId: doctorId,
       patientId: patientId,
       medicationName: medicationName,
       dosage: dosage,
@@ -195,12 +149,7 @@ class Doctor {
 
   /// Get prescription by ID
   PrescriptionModel? getPrescriptionById(String prescriptionId) {
-    final prescription = _prescriptionService.getById(prescriptionId);
-    // Verify prescription belongs to this doctor
-    if (prescription != null && prescription.doctorId == _currentDoctor.id) {
-      return prescription;
-    }
-    return null;
+    return _prescriptionService.getById(prescriptionId);
   }
 
   /// Get all prescriptions (all doctors)
@@ -216,16 +165,7 @@ class Doctor {
 
   /// Get my prescriptions (prescriptions I issued)
   List<PrescriptionModel> getMyPrescriptions() {
-    final doctorId = _currentDoctor.id;
-    return _prescriptionService.getDoctorPrescriptions(doctorId);
-  }
-
-  // Authentication is out of scope here; handled by separate flows
-
-  /// Get prescriptions for a patient that I issued
-  List<PrescriptionModel> getMyPrescriptionsForPatient(String patientId) {
-    final myPrescriptions = getMyPrescriptions();
-    return myPrescriptions.where((p) => p.patientId == patientId).toList();
+    return _prescriptionService.getMyPrescriptions();
   }
 
   // ========== Patient Queries ==========
