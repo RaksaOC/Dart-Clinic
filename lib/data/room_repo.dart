@@ -5,42 +5,34 @@
 library;
 
 import 'repo_base.dart';
-import '../domain/room.dart';
+import '../domain/models/room.dart';
 
-class RoomRepository extends RepositoryBase<Room> {
-  RoomRepository() : super('lib/db/rooms.json');
+class RoomRepository extends RepositoryBase<RoomModel> {
+  RoomRepository() : super('db/rooms.json');
 
   @override
-  Map<String, dynamic> toJson(Room entity) {
+  Map<String, dynamic> toJson(RoomModel entity) {
     return {
       'id': entity.id,
       'roomNumber': entity.roomNumber,
       'roomType': entity.roomType,
-      'totalBeds': entity.totalBeds,
-      'occupiedBeds': entity.occupiedBeds,
       'dailyRate': entity.dailyRate,
-      'isAvailable': entity.isAvailable,
+      'isOccupied': entity.isOccupied,
+      'patientId': entity.patientId,
       'notes': entity.notes,
     };
   }
 
   @override
-  Room fromJson(Map<String, dynamic> json) {
-    return Room(
+  RoomModel fromJson(Map<String, dynamic> json) {
+    return RoomModel(
       id: json['id'] as String,
       roomNumber: json['roomNumber'] as String,
       roomType: json['roomType'] as String,
-      totalBeds: json['totalBeds'] as int,
-      occupiedBeds: json['occupiedBeds'] as int,
       dailyRate: (json['dailyRate'] as num).toDouble(),
-      isAvailable: json['isAvailable'] as bool,
+      isOccupied: json['isOccupied'] as bool,
+      patientId: json['patientId'] as String?,
       notes: json['notes'] as String?,
     );
-  }
-
-  /// Get rooms by type
-  Future<List<Room>> getByType(String roomType) async {
-    final rooms = await loadAll();
-    return rooms.where((room) => room.roomType == roomType).toList();
   }
 }

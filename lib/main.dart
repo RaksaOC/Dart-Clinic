@@ -5,15 +5,8 @@
 library;
 
 import 'ui/main_menu.dart';
-import 'ui/doctor_menu.dart';
-import 'ui/admin_menu.dart';
 
 void main() {
-  // Initialize UI components
-  final doctorMenu = DoctorMenu();
-  final adminMenu = AdminMenu();
-  final mainMenu = MainMenu(doctorMenu: doctorMenu, adminMenu: adminMenu);
-
-  // Start the application
+  MainMenu mainMenu = MainMenu();
   mainMenu.display();
 }

@@ -14,6 +14,7 @@ dependencies:
   logging: ^1.2.0           # Optional structured logging
   intl: ^0.19.0             # For date/time formatting
   json_annotation: ^4.9.0   # For model serialization (optional but useful)
+  uuid: ^4.4.0              # For unique ID generation
 
 dev_dependencies:
   lints: ^6.0.0             # Dart style linter

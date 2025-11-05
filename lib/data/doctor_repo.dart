@@ -5,47 +5,38 @@
 library;
 
 import 'repo_base.dart';
-import '../domain/doctor.dart';
+import '../domain/models/doctor.dart';
 
-class DoctorRepository extends RepositoryBase<Doctor> {
-  DoctorRepository() : super('lib/db/doctors.json');
+class DoctorRepository extends RepositoryBase<DoctorModel> {
+  DoctorRepository() : super('db/doctors.json');
 
   @override
-  Map<String, dynamic> toJson(Doctor entity) {
+  Map<String, dynamic> toJson(DoctorModel entity) {
     return {
       'id': entity.id,
       'name': entity.name,
       'specialization': entity.specialization,
       'phoneNumber': entity.phoneNumber,
       'email': entity.email,
+      'address': entity.address,
+      'age': entity.age,
+      'gender': entity.gender,
+      'password': entity.password,
     };
   }
 
   @override
-  Doctor fromJson(Map<String, dynamic> json) {
-    return Doctor(
+  DoctorModel fromJson(Map<String, dynamic> json) {
+    return DoctorModel(
       id: json['id'] as String,
       name: json['name'] as String,
       specialization: json['specialization'] as String,
       phoneNumber: json['phoneNumber'] as String,
       email: json['email'] as String,
+      address: json['address'] as String,
+      age: json['age'] as int,
+      gender: json['gender'] as String,
+      password: json['password'] as String,
     );
-  }
-
-  /// Get doctors by specialization
-  Future<List<Doctor>> getBySpecialization(String specialization) async {
-    final doctors = await loadAll();
-    return doctors
-        .where((doctor) => doctor.specialization == specialization)
-        .toList();
-  }
-
-  /// Search doctors by name
-  Future<List<Doctor>> getByName(String name) async {
-    final doctors = await loadAll();
-    final lowerName = name.toLowerCase();
-    return doctors
-        .where((doctor) => doctor.name.toLowerCase().contains(lowerName))
-        .toList();
   }
 }

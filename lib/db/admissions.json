@@ -1,0 +1,29 @@
+[
+  {
+    "id": "A001",
+    "patientId": "P001",
+    "roomId": "R001",
+    "admissionDate": "2025-11-01T10:00:00.000Z",
+    "dischargeDate": null,
+    "status": "active",
+    "notes": "Observation for fever"
+  },
+  {
+    "id": "A002",
+    "patientId": "P004",
+    "roomId": "R003",
+    "admissionDate": "2025-11-03T14:30:00.000Z",
+    "dischargeDate": null,
+    "status": "active",
+    "notes": "Post-op recovery"
+  },
+  {
+    "id": "A000",
+    "patientId": "P003",
+    "roomId": "R002",
+    "admissionDate": "2025-10-20T08:15:00.000Z",
+    "dischargeDate": "2025-10-23T09:00:00.000Z",
+    "status": "discharged",
+    "notes": "Stable at discharge"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "M001",
+    "name": "Sok Vannak",
+    "email": "vannak.sok@clinic.kh",
+    "age": 38,
+    "gender": "Male",
+    "phoneNumber": "+855-12-345-678",
+    "address": "Phnom Penh, Toul Kork",
+    "password": "manager123"
+  },
+  {
+    "id": "M002",
+    "name": "Sreyleak Chum",
+    "email": "sreyleak.chum@clinic.kh",
+    "age": 32,
+    "gender": "Female",
+    "phoneNumber": "+855-98-765-432",
+    "address": "Siem Reap, Svay Dangkum",
+    "password": "secret456"
+  }
+]

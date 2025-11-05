@@ -1,2 +1,33 @@
-[]
+[
+  {
+    "id": "AP001",
+    "doctorId": "D001",
+    "patientId": "P001",
+    "appointmentDateTime": "2025-11-06T09:00:00.000Z",
+    "status": "scheduled",
+    "notes": "Follow-up",
+    "diagnosis": null,
+    "createdAt": "2025-11-04T08:00:00.000Z"
+  },
+  {
+    "id": "AP002",
+    "doctorId": "D002",
+    "patientId": "P004",
+    "appointmentDateTime": "2025-11-05T07:30:00.000Z",
+    "status": "completed",
+    "notes": "Chest pain evaluation",
+    "diagnosis": "Mild angina",
+    "createdAt": "2025-11-01T10:10:00.000Z"
+  },
+  {
+    "id": "AP003",
+    "doctorId": "D003",
+    "patientId": "P002",
+    "appointmentDateTime": "2025-11-10T13:00:00.000Z",
+    "status": "cancelled",
+    "notes": "Parent requested reschedule",
+    "diagnosis": null,
+    "createdAt": "2025-11-02T12:00:00.000Z"
+  }
+]
 

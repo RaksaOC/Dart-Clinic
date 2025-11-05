@@ -1,2 +1,27 @@
-[]
+[
+  {
+    "id": "RX001",
+    "doctorId": "D002",
+    "patientId": "P004",
+    "medicationName": "Aspirin",
+    "dosage": "81mg",
+    "frequency": "1x/day",
+    "durationDays": 30,
+    "instructions": "Take after breakfast",
+    "issueDate": "2025-11-05T08:00:00.000Z",
+    "notes": "Cardio protection"
+  },
+  {
+    "id": "RX002",
+    "doctorId": "D001",
+    "patientId": "P001",
+    "medicationName": "Paracetamol",
+    "dosage": "500mg",
+    "frequency": "3x/day",
+    "durationDays": 5,
+    "instructions": "With water",
+    "issueDate": "2025-11-02T09:15:00.000Z",
+    "notes": "For fever"
+  }
+]
 
