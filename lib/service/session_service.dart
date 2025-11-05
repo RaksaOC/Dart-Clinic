@@ -43,12 +43,17 @@ class SessionService {
   /// Login as manager using email/password
   /// Returns the authenticated ManagerModel or null if invalid
   ManagerModel? loginManager(String email, String password) {
-    final manager = ManagerService().authenticateManager(email, password);
-    if (manager != null) {
+    try {
+      final manager = ManagerService().getAllManagers().firstWhere(
+        (m) => m.email == email && m.password == password,
+      );
+
       _currentManager = manager;
-      _currentDoctor = null; // ensure only one role active
+      _currentDoctor = null;
+      return manager;
+    } catch (_) {
+      return null;
     }
-    return manager;
   }
 
   /// Clear current session (logout)

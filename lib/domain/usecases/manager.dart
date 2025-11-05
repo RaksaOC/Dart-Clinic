@@ -4,8 +4,6 @@
 /// UI layer interacts with this class, which delegates to services.
 library;
 
-import 'package:dart_clinic/service/session_service.dart';
-
 import '../models/manager.dart';
 import '../models/room.dart';
 import '../models/doctor.dart';
@@ -17,7 +15,6 @@ import '../../service/doctor_service.dart';
 import '../../service/patient_service.dart';
 import '../../service/admission_service.dart';
 import '../../service/manager_service.dart';
-// Repositories are not referenced here; this layer talks to services only.
 
 class Manager {
   final RoomService _roomService;
@@ -32,24 +29,11 @@ class Manager {
     PatientService? patientService,
     AdmissionService? admissionService,
     ManagerService? managerService,
-  }) :
-       _roomService = roomService ?? RoomService(),
+  }) : _roomService = roomService ?? RoomService(),
        _doctorService = doctorService ?? DoctorService(),
        _patientService = patientService ?? PatientService(),
        _admissionService = admissionService ?? AdmissionService(),
        _managerService = managerService ?? ManagerService();
-
-  // ========== Manager Authentication & Management ==========
-
-  /// Authenticate manager
-  ManagerModel? authenticateManager(String email, String password) {
-    return _managerService.authenticateManager(email, password);
-  }
-
-  /// Find manager by email
-  ManagerModel? findManagerByEmail(String email) {
-    return _managerService.findManagerByEmail(email);
-  }
 
   /// Get all managers
   List<ManagerModel> getAllManagers() {

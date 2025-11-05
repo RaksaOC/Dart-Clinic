@@ -16,16 +16,6 @@ class ManagerService {
   ManagerService([ManagerRepository? repository])
     : _managerRepository = repository ?? ManagerRepository();
 
-  /// Authenticate manager
-  ManagerModel? authenticateManager(String email, String password) {
-    final manager = findManagerByEmail(email);
-    if (manager != null &&
-        manager.email == email &&
-        manager.password == password) {
-      return manager;
-    }
-    return null;
-  }
 
   /// Create a new manager
   ManagerModel? createManager({
