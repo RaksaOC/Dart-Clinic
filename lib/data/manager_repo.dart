@@ -8,7 +8,7 @@ import 'repo_base.dart';
 import '../domain/models/manager.dart';
 
 class ManagerRepository extends RepositoryBase<ManagerModel> {
-  ManagerRepository() : super('lib/db/managers.json');
+  ManagerRepository() : super('db/managers.json');
 
   @override
   Map<String, dynamic> toJson(ManagerModel entity) {

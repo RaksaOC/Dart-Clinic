@@ -8,7 +8,7 @@ import 'repo_base.dart';
 import '../domain/models/prescription.dart';
 
 class PrescriptionRepository extends RepositoryBase<PrescriptionModel> {
-  PrescriptionRepository() : super('lib/db/prescriptions.json');
+  PrescriptionRepository() : super('db/prescriptions.json');
 
   @override
   Map<String, dynamic> toJson(PrescriptionModel entity) {

@@ -31,7 +31,7 @@ class SessionService {
       final doctor = doctors.firstWhere(
         (d) => d.email == email && d.password == password,
       );
-     
+
       _currentDoctor = doctor;
       _currentManager = null;
       return doctor;

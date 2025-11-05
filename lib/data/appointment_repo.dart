@@ -10,7 +10,7 @@ import 'repo_base.dart';
 import '../domain/models/appointment.dart';
 
 class AppointmentRepository extends RepositoryBase<AppointmentModel> {
-  AppointmentRepository() : super('lib/db/appointments.json');
+  AppointmentRepository() : super('db/appointments.json');
 
   @override
   Map<String, dynamic> toJson(AppointmentModel entity) {

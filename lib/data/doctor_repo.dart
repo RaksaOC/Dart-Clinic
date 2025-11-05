@@ -8,7 +8,7 @@ import 'repo_base.dart';
 import '../domain/models/doctor.dart';
 
 class DoctorRepository extends RepositoryBase<DoctorModel> {
-  DoctorRepository() : super('lib/db/doctors.json');
+  DoctorRepository() : super('db/doctors.json');
 
   @override
   Map<String, dynamic> toJson(DoctorModel entity) {

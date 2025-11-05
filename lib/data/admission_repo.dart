@@ -10,7 +10,7 @@ import 'repo_base.dart';
 import '../domain/models/admission.dart';
 
 class AdmissionRepository extends RepositoryBase<AdmissionModel> {
-  AdmissionRepository() : super('lib/db/admissions.json');
+  AdmissionRepository() : super('db/admissions.json');
 
   @override
   Map<String, dynamic> toJson(AdmissionModel entity) {

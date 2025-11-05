@@ -8,7 +8,7 @@ import 'repo_base.dart';
 import '../domain/models/room.dart';
 
 class RoomRepository extends RepositoryBase<RoomModel> {
-  RoomRepository() : super('lib/db/rooms.json');
+  RoomRepository() : super('db/rooms.json');
 
   @override
   Map<String, dynamic> toJson(RoomModel entity) {
