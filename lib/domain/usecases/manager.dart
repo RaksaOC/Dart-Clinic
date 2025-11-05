@@ -20,7 +20,6 @@ import '../../service/manager_service.dart';
 // Repositories are not referenced here; this layer talks to services only.
 
 class Manager {
-  final ManagerModel _currentManager;
   final RoomService _roomService;
   final DoctorService _doctorService;
   final PatientService _patientService;
@@ -33,7 +32,7 @@ class Manager {
     PatientService? patientService,
     AdmissionService? admissionService,
     ManagerService? managerService,
-  }) : _currentManager = SessionService().currentManager!,
+  }) :
        _roomService = roomService ?? RoomService(),
        _doctorService = doctorService ?? DoctorService(),
        _patientService = patientService ?? PatientService(),

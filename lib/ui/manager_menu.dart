@@ -7,8 +7,6 @@
 library;
 
 import 'package:prompts/prompts.dart' as prompts;
-import '../domain/models/manager.dart';
-import '../domain/usecases/manager.dart';
 import 'manager/manage_rooms.dart';
 import 'manager/manage_doctors.dart';
 import 'manager/manage_patients.dart';
