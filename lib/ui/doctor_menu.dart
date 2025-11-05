@@ -11,7 +11,7 @@ import 'package:prompts/prompts.dart' as prompts;
 import 'package:dart_clinic/services/session_service.dart';
 import 'doctor/manage_appointments.dart';
 import 'doctor/manage_prescriptions.dart';
-import 'doctor/search_patients.dart';
+import 'doctor/manage_patients.dart';
 import 'package:dart_clinic/utils/terminal.dart';
 
 class DoctorMenu {
