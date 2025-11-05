@@ -1,9 +1,14 @@
-import 'package:dart_clinic/domain/person.dart';
+/// Staff domain model
+///
+/// Base model for staff members extending PersonModel with authentication.
+library;
 
-class Staff extends Person {
+import 'package:dart_clinic/domain/models/person.dart';
+
+class StaffModel extends PersonModel {
   final String password;
 
-  Staff({
+  StaffModel({
     required super.id,
     required super.name,
     required super.age,

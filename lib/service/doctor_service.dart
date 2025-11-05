@@ -8,7 +8,7 @@
 /// Coordinates between the UI layer and doctor repository.
 library;
 
-import '../domain/doctor.dart';
+import '../domain/models/doctor.dart';
 import '../data/doctor_repo.dart';
 
 class DoctorService {
@@ -17,17 +17,17 @@ class DoctorService {
   DoctorService(this._doctorRepository);
 
   /// Get all doctors
-  List<Doctor> getAllDoctors() {
+  List<DoctorModel> getAllDoctors() {
     return _doctorRepository.getAll();
   }
 
   /// Get doctor by ID
-  Doctor? getDoctorById(String doctorId) {
+  DoctorModel? getDoctorById(String doctorId) {
     return _doctorRepository.getById(doctorId);
   }
 
   /// Get doctors by specialization
-  List<Doctor> getDoctorsBySpecialization(String specialization) {
+  List<DoctorModel> getDoctorsBySpecialization(String specialization) {
     final doctors = _doctorRepository.getAll();
     return doctors
         .where((doctor) => doctor.specialization == specialization)
@@ -35,7 +35,7 @@ class DoctorService {
   }
 
   /// Search doctors by name
-  List<Doctor> searchDoctorsByName(String name) {
+  List<DoctorModel> searchDoctorsByName(String name) {
     final doctors = _doctorRepository.getAll();
     final lowerName = name.toLowerCase();
     return doctors
@@ -44,7 +44,7 @@ class DoctorService {
   }
 
   /// Create a new doctor
-  Doctor? createDoctor({
+  DoctorModel? createDoctor({
     required String doctorId,
     required String name,
     required String specialization,
@@ -55,7 +55,7 @@ class DoctorService {
     required String gender,
     required String password,
   }) {
-    final doctor = Doctor(
+    final doctor = DoctorModel(
       id: doctorId,
       name: name,
       specialization: specialization,
@@ -70,7 +70,7 @@ class DoctorService {
   }
 
   /// Update a doctor's information
-  bool updateDoctor(Doctor doctor) {
+  bool updateDoctor(DoctorModel doctor) {
     return _doctorRepository.update(doctor);
   }
 

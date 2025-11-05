@@ -4,16 +4,16 @@
 /// Handles CRUD operations for appointment entities stored in JSON format.
 library;
 
-import 'package:dart_clinic/domain/status.dart';
+import 'package:dart_clinic/domain/models/status.dart';
 
 import 'repo_base.dart';
-import '../domain/appointment.dart';
+import '../domain/models/appointment.dart';
 
-class AppointmentRepository extends RepositoryBase<Appointment> {
+class AppointmentRepository extends RepositoryBase<AppointmentModel> {
   AppointmentRepository() : super('lib/db/appointments.json');
 
   @override
-  Map<String, dynamic> toJson(Appointment entity) {
+  Map<String, dynamic> toJson(AppointmentModel entity) {
     return {
       'id': entity.id,
       'doctorId': entity.doctorId,
@@ -27,8 +27,8 @@ class AppointmentRepository extends RepositoryBase<Appointment> {
   }
 
   @override
-  Appointment fromJson(Map<String, dynamic> json) {
-    return Appointment(
+  AppointmentModel fromJson(Map<String, dynamic> json) {
+    return AppointmentModel(
       id: json['id'] as String,
       doctorId: json['doctorId'] as String,
       patientId: json['patientId'] as String,

@@ -1,4 +1,9 @@
-class Person {
+/// Person domain model
+///
+/// Base model representing a person with personal information.
+library;
+
+class PersonModel {
   final String id;
   final String name;
   final int age;
@@ -7,7 +12,7 @@ class Person {
   final String email;
   final String address;
 
-  Person({
+  PersonModel({
     required this.id,
     required this.name,
     required this.age,

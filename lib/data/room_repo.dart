@@ -5,13 +5,13 @@
 library;
 
 import 'repo_base.dart';
-import '../domain/room.dart';
+import '../domain/models/room.dart';
 
-class RoomRepository extends RepositoryBase<Room> {
+class RoomRepository extends RepositoryBase<RoomModel> {
   RoomRepository() : super('lib/db/rooms.json');
 
   @override
-  Map<String, dynamic> toJson(Room entity) {
+  Map<String, dynamic> toJson(RoomModel entity) {
     return {
       'id': entity.id,
       'roomNumber': entity.roomNumber,
@@ -24,8 +24,8 @@ class RoomRepository extends RepositoryBase<Room> {
   }
 
   @override
-  Room fromJson(Map<String, dynamic> json) {
-    return Room(
+  RoomModel fromJson(Map<String, dynamic> json) {
+    return RoomModel(
       id: json['id'] as String,
       roomNumber: json['roomNumber'] as String,
       roomType: json['roomType'] as String,

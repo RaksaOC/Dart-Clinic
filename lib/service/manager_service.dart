@@ -7,7 +7,7 @@
 /// Coordinates between the UI layer and manager repository.
 library;
 
-import '../domain/manager.dart';
+import '../domain/models/manager.dart';
 import '../data/manager_repo.dart';
 
 class ManagerService {
@@ -16,17 +16,17 @@ class ManagerService {
   ManagerService(this._managerRepository);
 
   /// Get all managers
-  List<Manager> getAllManagers() {
+  List<ManagerModel> getAllManagers() {
     return _managerRepository.getAll();
   }
 
   /// Get manager by ID
-  Manager? getManagerById(String managerId) {
+  ManagerModel? getManagerById(String managerId) {
     return _managerRepository.getById(managerId);
   }
 
   /// Find manager by email
-  Manager? findManagerByEmail(String email) {
+  ManagerModel? findManagerByEmail(String email) {
     final managers = _managerRepository.getAll();
     try {
       return managers.firstWhere((manager) => manager.email == email);
@@ -36,7 +36,7 @@ class ManagerService {
   }
 
   /// Authenticate manager
-  Manager? authenticateManager(String email, String password) {
+  ManagerModel? authenticateManager(String email, String password) {
     final manager = findManagerByEmail(email);
     if (manager != null &&
         manager.email == email &&
@@ -47,7 +47,7 @@ class ManagerService {
   }
 
   /// Create a new manager
-  Manager? createManager({
+  ManagerModel? createManager({
     required String managerId,
     required String name,
     required String email,
@@ -57,7 +57,7 @@ class ManagerService {
     required String phoneNumber,
     required String address,
   }) {
-    final manager = Manager(
+    final manager = ManagerModel(
       id: managerId,
       name: name,
       email: email,
@@ -71,7 +71,7 @@ class ManagerService {
   }
 
   /// Update manager information
-  bool updateManager(Manager manager) {
+  bool updateManager(ManagerModel manager) {
     return _managerRepository.update(manager);
   }
 

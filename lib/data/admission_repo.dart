@@ -4,16 +4,16 @@
 /// Handles CRUD operations for admission entities stored in JSON format.
 library;
 
-import 'package:dart_clinic/domain/status.dart';
+import 'package:dart_clinic/domain/models/status.dart';
 
 import 'repo_base.dart';
-import '../domain/admission.dart';
+import '../domain/models/admission.dart';
 
-class AdmissionRepository extends RepositoryBase<Admission> {
+class AdmissionRepository extends RepositoryBase<AdmissionModel> {
   AdmissionRepository() : super('lib/db/admissions.json');
 
   @override
-  Map<String, dynamic> toJson(Admission entity) {
+  Map<String, dynamic> toJson(AdmissionModel entity) {
     return {
       'id': entity.id,
       'patientId': entity.patientId,
@@ -26,8 +26,8 @@ class AdmissionRepository extends RepositoryBase<Admission> {
   }
 
   @override
-  Admission fromJson(Map<String, dynamic> json) {
-    return Admission(
+  AdmissionModel fromJson(Map<String, dynamic> json) {
+    return AdmissionModel(
       id: json['id'] as String,
       patientId: json['patientId'] as String,
       roomId: json['roomId'] as String,

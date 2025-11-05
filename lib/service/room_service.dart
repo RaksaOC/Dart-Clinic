@@ -1,4 +1,4 @@
-/// Room Service
+/// RoomModel Service
 ///
 /// Handles business logic for room management including:
 /// - Checking room availability
@@ -8,7 +8,7 @@
 /// Coordinates between the UI layer and room repository.
 library;
 
-import '../domain/room.dart';
+import '../domain/models/room.dart';
 import '../data/room_repo.dart';
 
 class RoomService {
@@ -17,36 +17,36 @@ class RoomService {
   RoomService(this._roomRepository);
 
   /// Get all available rooms
-  List<Room> getAvailableRooms() {
+  List<RoomModel> getAvailableRooms() {
     final rooms = _roomRepository.getAll();
     return rooms.where((room) => !room.isOccupied).toList();
   }
 
   /// Get all rooms
-  List<Room> getAllRooms() {
+  List<RoomModel> getAllRooms() {
     return _roomRepository.getAll();
   }
 
   /// Get rooms by type
-  List<Room> getRoomsByType(String roomType) {
+  List<RoomModel> getRoomsByType(String roomType) {
     final rooms = _roomRepository.getAll();
     return rooms.where((room) => room.roomType == roomType).toList();
   }
 
   /// Get room by ID
-  Room? getRoomById(String roomId) {
+  RoomModel? getRoomById(String roomId) {
     return _roomRepository.getById(roomId);
   }
 
   /// Create a new room
-  Room? createRoom({
+  RoomModel? createRoom({
     required String roomId,
     required String roomNumber,
     required String roomType,
     required double dailyRate,
     String? notes,
   }) {
-    final room = Room(
+    final room = RoomModel(
       id: roomId,
       roomNumber: roomNumber,
       roomType: roomType,

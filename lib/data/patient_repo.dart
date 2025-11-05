@@ -5,13 +5,13 @@
 library;
 
 import 'repo_base.dart';
-import '../domain/patient.dart';
+import '../domain/models/patient.dart';
 
-class PatientRepository extends RepositoryBase<Patient> {
+class PatientRepository extends RepositoryBase<PatientModel> {
   PatientRepository() : super('lib/db/patients.json');
 
   @override
-  Map<String, dynamic> toJson(Patient entity) {
+  Map<String, dynamic> toJson(PatientModel entity) {
     return {
       'id': entity.id,
       'name': entity.name,
@@ -24,8 +24,8 @@ class PatientRepository extends RepositoryBase<Patient> {
   }
 
   @override
-  Patient fromJson(Map<String, dynamic> json) {
-    return Patient(
+  PatientModel fromJson(Map<String, dynamic> json) {
+    return PatientModel(
       id: json['id'] as String,
       name: json['name'] as String,
       age: json['age'] as int,

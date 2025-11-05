@@ -5,13 +5,13 @@
 library;
 
 import 'repo_base.dart';
-import '../domain/manager.dart';
+import '../domain/models/manager.dart';
 
-class ManagerRepository extends RepositoryBase<Manager> {
+class ManagerRepository extends RepositoryBase<ManagerModel> {
   ManagerRepository() : super('lib/db/managers.json');
 
   @override
-  Map<String, dynamic> toJson(Manager entity) {
+  Map<String, dynamic> toJson(ManagerModel entity) {
     return {
       'id': entity.id,
       'name': entity.name,
@@ -25,8 +25,8 @@ class ManagerRepository extends RepositoryBase<Manager> {
   }
 
   @override
-  Manager fromJson(Map<String, dynamic> json) {
-    return Manager(
+  ManagerModel fromJson(Map<String, dynamic> json) {
+    return ManagerModel(
       id: json['id'] as String,
       name: json['name'] as String,
       email: json['email'] as String,

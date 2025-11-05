@@ -4,21 +4,19 @@
 /// with scheduling information and status tracking.
 library;
 
-import 'package:dart_clinic/domain/prescription.dart';
-import 'package:dart_clinic/domain/status.dart';
+import 'package:dart_clinic/domain/models/status.dart';
 
-class Appointment {
+class AppointmentModel {
   final String id;
   final String doctorId;
   final String patientId;
   final DateTime appointmentDateTime;
   final String? notes;
   final String? diagnosis;
-  final Prescription? prescription;
   final DateTime? createdAt;
   final AppointmentStatus status;
 
-  Appointment({
+  AppointmentModel({
     required this.id,
     required this.doctorId,
     required this.patientId,
@@ -26,7 +24,6 @@ class Appointment {
     required this.status,
     this.notes,
     this.diagnosis,
-    this.prescription,
     this.createdAt,
   });
 }

@@ -4,9 +4,9 @@
 /// and tracking admission details including dates and status.
 library;
 
-import 'package:dart_clinic/domain/status.dart';
+import 'package:dart_clinic/domain/models/status.dart';
 
-class Admission {
+class AdmissionModel {
   final String id;
   final String patientId;
   final String roomId;
@@ -15,7 +15,7 @@ class Admission {
   final AdmissionStatus status;
   final String? notes;
 
-  Admission({
+  AdmissionModel({
     required this.id,
     required this.patientId,
     required this.roomId,

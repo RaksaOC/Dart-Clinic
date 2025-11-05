@@ -8,11 +8,11 @@
 library;
 
 import 'package:prompts/prompts.dart' as prompts;
-import '../domain/doctor.dart';
+import '../domain/models/doctor.dart';
 import 'main_menu.dart';
 
 class DoctorMenu {
-  Doctor? currentDoctor;
+  DoctorModel? currentDoctor;
 
   /// Display the doctor menu and handle operations
   void display(MainMenu mainMenu) {
@@ -78,7 +78,7 @@ class DoctorMenu {
       // TODO: Implement actual authentication
       // For now, use mock credentials
       if (email == 'doctor@hospital.com' && password == 'doctor123') {
-        currentDoctor = Doctor(
+        currentDoctor = DoctorModel(
           id: 'D001',
           name: 'Dr. John Doe',
           specialization: 'General Medicine',

@@ -4,10 +4,10 @@
 /// system-wide management operations including creating rooms and assigning patients.
 library;
 
-import 'package:dart_clinic/domain/staff.dart';
+import 'package:dart_clinic/domain/models/staff.dart';
 
-class Manager extends Staff {
-  Manager({
+class ManagerModel extends StaffModel {
+  ManagerModel({
     required super.id,
     required super.name,
     required super.age,

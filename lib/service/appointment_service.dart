@@ -9,9 +9,9 @@
 /// Coordinates between the UI layer and appointment repository.
 library;
 
-import 'package:dart_clinic/domain/status.dart';
+import 'package:dart_clinic/domain/models/status.dart';
 
-import '../domain/appointment.dart';
+import '../domain/models/appointment.dart';
 import '../data/appointment_repo.dart';
 
 class AppointmentService {
@@ -20,14 +20,14 @@ class AppointmentService {
   AppointmentService(this._appointmentRepository);
 
   /// Create a new appointment
-  Appointment? createAppointment({
+  AppointmentModel? createAppointment({
     required String appointmentId,
     required String doctorId,
     required String patientId,
     required DateTime appointmentDateTime,
     String? notes,
   }) {
-    final appointment = Appointment(
+    final appointment = AppointmentModel(
       id: appointmentId,
       doctorId: doctorId,
       patientId: patientId,
@@ -46,7 +46,7 @@ class AppointmentService {
       return false;
     }
 
-    final cancelledAppointment = Appointment(
+    final cancelledAppointment = AppointmentModel(
       id: appointment.id,
       doctorId: appointment.doctorId,
       patientId: appointment.patientId,
@@ -61,13 +61,13 @@ class AppointmentService {
   }
 
   /// Get all appointments for a doctor
-  List<Appointment> getDoctorAppointments(String doctorId) {
+  List<AppointmentModel> getDoctorAppointments(String doctorId) {
     final appointments = _appointmentRepository.getAll();
     return appointments.where((a) => a.doctorId == doctorId).toList();
   }
 
   /// Get all appointments for a patient
-  List<Appointment> getPatientAppointments(String patientId) {
+  List<AppointmentModel> getPatientAppointments(String patientId) {
     final appointments = _appointmentRepository.getAll();
     return appointments.where((a) => a.patientId == patientId).toList();
   }
@@ -83,7 +83,7 @@ class AppointmentService {
       return false;
     }
 
-    final completedAppointment = Appointment(
+    final completedAppointment = AppointmentModel(
       id: appointment.id,
       doctorId: appointment.doctorId,
       patientId: appointment.patientId,
@@ -98,7 +98,7 @@ class AppointmentService {
   }
 
   /// Get upcoming appointments within a date range
-  List<Appointment> getUpcomingAppointments(
+  List<AppointmentModel> getUpcomingAppointments(
     DateTime startDate,
     DateTime endDate,
   ) {
@@ -114,7 +114,7 @@ class AppointmentService {
   }
 
   /// Get appointments by status
-  List<Appointment> getByStatus(AppointmentStatus status) {
+  List<AppointmentModel> getByStatus(AppointmentStatus status) {
     final appointments = _appointmentRepository.getAll();
     return appointments.where((a) => a.status == status).toList();
   }

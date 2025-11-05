@@ -4,7 +4,7 @@
 /// with medication details, dosage, and instructions.
 library;
 
-class Prescription {
+class PrescriptionModel {
   final String id;
   final String doctorId;
   final String patientId;
@@ -16,7 +16,7 @@ class Prescription {
   final DateTime issueDate;
   final String? notes;
 
-  Prescription({
+  PrescriptionModel({
     required this.id,
     required this.doctorId,
     required this.patientId,

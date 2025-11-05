@@ -1,4 +1,4 @@
-/// Admission Service
+/// AdmissionModel Service
 ///
 /// Handles business logic for patient admissions including:
 /// - Admitting patients to rooms
@@ -8,10 +8,10 @@
 /// Coordinates between the UI layer and admission/room repositories.
 library;
 
-import 'package:dart_clinic/domain/status.dart';
+import 'package:dart_clinic/domain/models/room.dart';
+import 'package:dart_clinic/domain/models/status.dart';
 
-import '../domain/admission.dart';
-import '../domain/room.dart';
+import '../domain/models/admission.dart';
 import '../data/admission_repo.dart';
 import '../data/room_repo.dart';
 
@@ -22,7 +22,7 @@ class AdmissionService {
   AdmissionService(this._admissionRepository, this._roomRepository);
 
   /// Admit a patient to a room
-  Admission? admitPatient({
+  AdmissionModel? admitPatient({
     required String admissionId,
     required String patientId,
     required String roomId,
@@ -41,7 +41,7 @@ class AdmissionService {
     }
 
     // Create admission record
-    final admission = Admission(
+    final admission = AdmissionModel(
       id: admissionId,
       patientId: patientId,
       roomId: roomId,
@@ -51,7 +51,7 @@ class AdmissionService {
     );
 
     // Update room to occupied
-    final occupiedRoom = Room(
+    final occupiedRoom = RoomModel(
       id: room.id,
       roomNumber: room.roomNumber,
       roomType: room.roomType,
@@ -73,7 +73,7 @@ class AdmissionService {
     }
 
     // Update admission to discharged
-    final dischargedAdmission = Admission(
+    final dischargedAdmission = AdmissionModel(
       id: admission.id,
       patientId: admission.patientId,
       roomId: admission.roomId,
@@ -86,7 +86,7 @@ class AdmissionService {
     // Update room to available
     final room = _roomRepository.getById(admission.roomId);
     if (room != null) {
-      final availableRoom = Room(
+      final availableRoom = RoomModel(
         id: room.id,
         roomNumber: room.roomNumber,
         roomType: room.roomType,
@@ -102,12 +102,12 @@ class AdmissionService {
   }
 
   /// Get all admissions
-  List<Admission> getAllAdmissions() {
+  List<AdmissionModel> getAllAdmissions() {
     return _admissionRepository.getAll();
   }
 
   /// Get admissions by patient ID
-  List<Admission> getAdmissionsByPatientId(String patientId) {
+  List<AdmissionModel> getAdmissionsByPatientId(String patientId) {
     final admissions = _admissionRepository.getAll();
     return admissions
         .where((admission) => admission.patientId == patientId)
@@ -115,19 +115,19 @@ class AdmissionService {
   }
 
   /// Get admissions by room ID
-  List<Admission> getAdmissionsByRoomId(String roomId) {
+  List<AdmissionModel> getAdmissionsByRoomId(String roomId) {
     final admissions = _admissionRepository.getAll();
     return admissions.where((admission) => admission.roomId == roomId).toList();
   }
 
   /// Get active admissions
-  List<Admission> getActiveAdmissions() {
+  List<AdmissionModel> getActiveAdmissions() {
     final admissions = _admissionRepository.getAll();
     return admissions.where((a) => a.status == AdmissionStatus.active).toList();
   }
 
   /// Get active admission for a patient
-  Admission? getActiveByPatientId(String patientId) {
+  AdmissionModel? getActiveByPatientId(String patientId) {
     final admissions = getAdmissionsByPatientId(patientId);
     try {
       return admissions.firstWhere((a) => a.status == AdmissionStatus.active);

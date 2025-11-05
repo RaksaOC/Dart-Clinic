@@ -2,64 +2,63 @@
 ///
 /// Provides CLI interface for manager-specific operations including:
 /// - Creating and managing rooms
-/// - Assigning patients to rooms
-/// - Managing medication stock
-/// - Generating reports
+/// - Managing doctors, patients, and admissions
 /// - System administration
 library;
 
 import 'package:prompts/prompts.dart' as prompts;
-import '../domain/manager.dart';
+import '../domain/models/manager.dart';
+import '../domain/usecases/manager.dart' as manager_use_case;
 import 'main_menu.dart';
+import 'manager/manage_rooms.dart';
+import 'manager/manage_doctors.dart';
+import 'manager/manage_patients.dart';
+import 'manager/manage_admissions.dart';
+import 'manager/manage_managers.dart';
 
 class ManagerMenu {
-  Manager? currentManager;
+  final manager_use_case.Manager _manager;
+  ManagerModel? currentManager;
 
-  /// Display the admin menu and handle operations
+  ManagerMenu({required manager_use_case.Manager manager}) : _manager = manager;
+
+  /// Display the manager menu and handle operations
   void display(MainMenu mainMenu) {
-    // First, authenticate the admin
+    // First, authenticate the manager
     if (!_login()) {
       return; // Return to main menu if login fails
     }
 
     while (true) {
-      print('\n' + '-' * 50);
-      print('MANAGER MENU');
+      print('\n' + '=' * 50);
+      print('MANAGER DASHBOARD');
       print('Logged in as: ${currentManager?.name ?? "Unknown"}');
-      print('-' * 50);
+      print('=' * 50);
 
       final choice = prompts.choose('\nWhat would you like to do?', [
-        'Create Room',
         'Manage Rooms',
-        'Assign Patient to Room',
-        'Manage Medication Stock',
-        'Generate Reports',
-        'View System Statistics',
-        'Manage Users',
+        'Manage Doctors',
+        'Manage Patients',
+        'Manage Admissions',
+        'Manage Managers',
         'Logout',
       ]);
 
       switch (choice) {
-        case 'Create Room':
-          _createRoom();
-          break;
         case 'Manage Rooms':
-          _manageRooms();
+          ManageRooms(_manager).display();
           break;
-        case 'Assign Patient to Room':
-          _assignPatientToRoom();
+        case 'Manage Doctors':
+          ManageDoctors(_manager).display();
           break;
-        case 'Manage Medication Stock':
-          _manageMedicationStock();
+        case 'Manage Patients':
+          ManagePatients(_manager).display();
           break;
-        case 'Generate Reports':
-          _generateReports();
+        case 'Manage Admissions':
+          ManageAdmissions(_manager).display();
           break;
-        case 'View System Statistics':
-          _viewSystemStatistics();
-          break;
-        case 'Manage Users':
-          _manageUsers();
+        case 'Manage Managers':
+          ManageManagers(_manager, currentManager).display();
           break;
         case 'Logout':
           currentManager = null;
@@ -84,19 +83,9 @@ class ManagerMenu {
 
       final password = prompts.get('Enter your password');
 
-      // TODO: Implement actual authentication
-      // For now, use mock credentials
-      if (email == 'manager@hospital.com' && password == 'manager123') {
-        currentManager = Manager(
-          id: 'M001',
-          name: 'Manager',
-          email: email,
-          password: password,
-          age: 30,
-          gender: 'Male',
-          phoneNumber: '555-0101',
-          address: '123 Main St, Anytown, USA',
-        );
+      currentManager = _manager.authenticateManager(email.trim(), password);
+
+      if (currentManager != null) {
         print('\n✅ Login successful! Welcome, ${currentManager!.name}');
         return true;
       } else {
@@ -107,61 +96,5 @@ class ManagerMenu {
         }
       }
     }
-  }
-
-  /// Create a new room
-  void _createRoom() {
-    print('\n🏥 CREATE ROOM');
-    print('-' * 50);
-    // TODO: Implement room creation
-    print('\n⏳ Feature coming soon...');
-  }
-
-  /// Assign patient to room
-  void _assignPatientToRoom() {
-    print('\n🛏️  ASSIGN PATIENT TO ROOM');
-    print('-' * 50);
-    // TODO: Implement patient assignment to room
-    print('\n⏳ Feature coming soon...');
-  }
-
-  /// Manage rooms
-  void _manageRooms() {
-    print('\n🏥 MANAGE ROOMS');
-    print('-' * 50);
-    // TODO: Implement room management
-    print('\n⏳ Feature coming soon...');
-  }
-
-  /// Manage medication stock
-  void _manageMedicationStock() {
-    print('\n💊 MANAGE MEDICATION STOCK');
-    print('-' * 50);
-    // TODO: Implement medication stock management
-    print('\n⏳ Feature coming soon...');
-  }
-
-  /// Generate reports
-  void _generateReports() {
-    print('\n📊 GENERATE REPORTS');
-    print('-' * 50);
-    // TODO: Implement report generation
-    print('\n⏳ Feature coming soon...');
-  }
-
-  /// View system statistics
-  void _viewSystemStatistics() {
-    print('\n📈 SYSTEM STATISTICS');
-    print('-' * 50);
-    // TODO: Implement system statistics
-    print('\n⏳ Feature coming soon...');
-  }
-
-  /// Manage users
-  void _manageUsers() {
-    print('\n👥 MANAGE USERS');
-    print('-' * 50);
-    // TODO: Implement user management
-    print('\n⏳ Feature coming soon...');
   }
 }

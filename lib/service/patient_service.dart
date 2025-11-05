@@ -8,7 +8,7 @@
 /// Coordinates between the UI layer and patient repository.
 library;
 
-import '../domain/patient.dart';
+import '../domain/models/patient.dart';
 import '../data/patient_repo.dart';
 
 class PatientService {
@@ -17,17 +17,17 @@ class PatientService {
   PatientService(this._patientRepository);
 
   /// Get all patients
-  List<Patient> getAllPatients() {
+  List<PatientModel> getAllPatients() {
     return _patientRepository.getAll();
   }
 
   /// Get patient by ID
-  Patient? getPatientById(String patientId) {
+  PatientModel? getPatientById(String patientId) {
     return _patientRepository.getById(patientId);
   }
 
   /// Search patients by name
-  List<Patient> searchPatientsByName(String name) {
+  List<PatientModel> searchPatientsByName(String name) {
     final patients = _patientRepository.getAll();
     final lowerName = name.toLowerCase();
     return patients
@@ -38,19 +38,19 @@ class PatientService {
   /// Get admitted patients
   /// Note: This requires checking with AdmissionService for admission status
   /// For now, returns empty list - admission status is managed separately
-  List<Patient> getAdmittedPatients() {
+  List<PatientModel> getAdmittedPatients() {
     // TODO: Implement by checking AdmissionService for active admissions
     return [];
   }
 
   /// Get patients by gender
-  List<Patient> getPatientsByGender(String gender) {
+  List<PatientModel> getPatientsByGender(String gender) {
     final patients = _patientRepository.getAll();
     return patients.where((patient) => patient.gender == gender).toList();
   }
 
   /// Create a new patient
-  Patient? createPatient({
+  PatientModel? createPatient({
     required String patientId,
     required String name,
     required int age,
@@ -59,7 +59,7 @@ class PatientService {
     required String email,
     required String address,
   }) {
-    final patient = Patient(
+    final patient = PatientModel(
       id: patientId,
       name: name,
       age: age,
@@ -72,7 +72,7 @@ class PatientService {
   }
 
   /// Update patient information
-  bool updatePatient(Patient patient) {
+  bool updatePatient(PatientModel patient) {
     return _patientRepository.update(patient);
   }
 

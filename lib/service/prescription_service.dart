@@ -8,7 +8,7 @@
 /// Coordinates between the UI layer and prescription repository.
 library;
 
-import '../domain/prescription.dart';
+import '../domain/models/prescription.dart';
 import '../data/prescription_repo.dart';
 
 class PrescriptionService {
@@ -17,7 +17,7 @@ class PrescriptionService {
   PrescriptionService(this._prescriptionRepository);
 
   /// Issue a new prescription
-  Prescription? issuePrescription({
+  PrescriptionModel? issuePrescription({
     required String prescriptionId,
     required String doctorId,
     required String patientId,
@@ -28,7 +28,7 @@ class PrescriptionService {
     required String instructions,
     String? notes,
   }) {
-    final prescription = Prescription(
+    final prescription = PrescriptionModel(
       id: prescriptionId,
       doctorId: doctorId,
       patientId: patientId,
@@ -44,7 +44,7 @@ class PrescriptionService {
   }
 
   /// Get all prescriptions for a patient
-  List<Prescription> getPatientPrescriptions(String patientId) {
+  List<PrescriptionModel> getPatientPrescriptions(String patientId) {
     final prescriptions = _prescriptionRepository.getAll();
     return prescriptions
         .where((prescription) => prescription.patientId == patientId)
@@ -52,7 +52,7 @@ class PrescriptionService {
   }
 
   /// Get all prescriptions for a doctor
-  List<Prescription> getDoctorPrescriptions(String doctorId) {
+  List<PrescriptionModel> getDoctorPrescriptions(String doctorId) {
     final prescriptions = _prescriptionRepository.getAll();
     return prescriptions
         .where((prescription) => prescription.doctorId == doctorId)

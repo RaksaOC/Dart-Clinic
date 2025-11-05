@@ -4,10 +4,10 @@
 /// medical history, and current status (admitted/discharged).
 library;
 
-import 'package:dart_clinic/domain/person.dart';
+import 'package:dart_clinic/domain/models/person.dart';
 
-class Patient extends Person {
-  Patient({
+class PatientModel extends PersonModel {
+  PatientModel({
     required super.id,
     required super.name,
     required super.age,
