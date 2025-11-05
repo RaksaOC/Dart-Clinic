@@ -8,6 +8,7 @@ import 'package:prompts/prompts.dart' as prompts;
 import 'dart:io';
 import 'doctor_menu.dart';
 import 'manager_menu.dart';
+import 'package:dart_clinic/utils/terminal.dart';
 
 class MainMenu {
   final DoctorMenu doctorMenu;
@@ -17,6 +18,7 @@ class MainMenu {
 
   /// Display the main menu and handle user navigation
   void display() {
+    TerminalUI.clearScreen();
     _showWelcomeMessage();
 
     final role = prompts.choose('\nSelect a portal:', [
@@ -28,11 +30,13 @@ class MainMenu {
     switch (role) {
       case 'Doctor Portal':
         doctorMenu.display();
-        display(); // Return to main menu after logout
+        TerminalUI.pauseAndClear();
+        display(); 
         break;
       case 'Manager Portal':
         managerMenu.display();
-        display(); // Return to main menu after logout
+        TerminalUI.pauseAndClear();
+        display(); 
         break;
       case 'Exit':
         _exit();
@@ -43,13 +47,13 @@ class MainMenu {
   /// Show welcome message
   void _showWelcomeMessage() {
     print('\n' + '=' * 50);
-    print('🏥  HOSPITAL MANAGEMENT SYSTEM  🏥');
+    print('HOSPITAL MANAGEMENT SYSTEM');
     print('=' * 50);
   }
 
   /// Exit the application
   void _exit() {
-    print('\n👋 Thank you for using Hospital Management System!');
+    print('\nThank you for using Hospital Management System.');
     print('Have a great day!\n');
     exit(0);
   }

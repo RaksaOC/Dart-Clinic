@@ -10,7 +10,8 @@ library;
 
 import '../domain/models/prescription.dart';
 import '../data/prescription_repo.dart';
-import 'package:dart_clinic/service/session_service.dart';
+import 'package:dart_clinic/services/session_service.dart';
+import 'package:uuid/uuid.dart';
 
 class PrescriptionService {
   final PrescriptionRepository _prescriptionRepository;
@@ -20,7 +21,6 @@ class PrescriptionService {
 
   /// Issue a new prescription
   PrescriptionModel? issuePrescription({
-    required String prescriptionId,
     required String patientId,
     required String medicationName,
     required String dosage,
@@ -31,8 +31,13 @@ class PrescriptionService {
   }) {
     final currentDoctor = SessionService().currentDoctor;
     if (currentDoctor == null) return null;
+    final String id = const Uuid().v4();
+    // Uniqueness check
+    if (_prescriptionRepository.getById(id) != null) {
+      return null;
+    }
     final prescription = PrescriptionModel(
-      id: prescriptionId,
+      id: id,
       doctorId: currentDoctor.id,
       patientId: patientId,
       medicationName: medicationName,

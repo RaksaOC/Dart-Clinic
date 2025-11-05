@@ -5,17 +5,20 @@ library;
 
 import 'package:prompts/prompts.dart' as prompts;
 import '../../domain/models/appointment.dart';
-import '../../domain/usecases/doctor.dart';
+import '../../domain/controllers/doctor/appointments_controller.dart';
+import 'package:dart_clinic/utils/formatter.dart';
+import 'package:dart_clinic/utils/terminal.dart';
 
 class ManageAppointments {
-  final Doctor _doctor;
+  final AppointmentsController _controller;
 
-  ManageAppointments() : _doctor = Doctor();
+  ManageAppointments() : _controller = AppointmentsController();
 
   void display() {
     while (true) {
+      TerminalUI.clearScreen();
       print('\n' + '=' * 50);
-      print('📅 MANAGE APPOINTMENTS');
+      print('MANAGE APPOINTMENTS');
       print('=' * 50);
 
       final choice = prompts.choose('\nWhat would you like to do?', [
@@ -29,15 +32,19 @@ class ManageAppointments {
       switch (choice) {
         case 'Create Appointment':
           _createAppointment();
+          TerminalUI.pauseAndClear();
           break;
         case 'View My Appointments':
           _viewMyAppointmentsMenu();
+          TerminalUI.pauseAndClear();
           break;
         case 'View Appointment Details':
           _viewAppointmentDetails();
+          TerminalUI.pauseAndClear();
           break;
         case 'Cancel Appointment':
           _cancelAppointment();
+          TerminalUI.pauseAndClear();
           break;
         case 'Back to Doctor Dashboard':
           return;
@@ -46,11 +53,10 @@ class ManageAppointments {
   }
 
   void _createAppointment() {
-    print('\n📝 CREATE APPOINTMENT');
+    print('\nCREATE APPOINTMENT');
     print('-' * 50);
 
     try {
-      final appointmentId = prompts.get('Appointment ID (e.g., AP001):');
       final patientId = prompts.get('Patient ID:');
       final dateStr = prompts.get('Date & Time (YYYY-MM-DD HH:MM, 24h):');
       final notes = prompts.get('Notes (optional, press Enter to skip):');
@@ -62,20 +68,19 @@ class ManageAppointments {
         return;
       }
 
-      final created = _doctor.createAppointment(
-        appointmentId: appointmentId.trim(),
+      final created = _controller.createAppointment(
         patientId: patientId.trim(),
         appointmentDateTime: dateTime,
         notes: notes.trim().isEmpty ? null : notes.trim(),
       );
 
       if (created != null) {
-        print('\n✅ Appointment created successfully!');
+        print('\nAppointment created successfully.');
         print('ID: ${created.id}');
         print('Patient: ${created.patientId}');
         print('When: ${created.appointmentDateTime}');
       } else {
-        print('\n❌ Failed to create appointment. Ensure patient exists.');
+        print('\nFailed to create appointment. Ensure patient exists.');
       }
     } catch (e) {
       print('\n❌ Error: ${e.toString()}');
@@ -84,8 +89,9 @@ class ManageAppointments {
 
   void _viewMyAppointmentsMenu() {
     while (true) {
+      TerminalUI.clearScreen();
       print('\n' + '-' * 50);
-      print('📅 VIEW MY APPOINTMENTS');
+      print('VIEW MY APPOINTMENTS');
       print('-' * 50);
 
       final choice = prompts.choose('Choose a view:', [
@@ -98,18 +104,33 @@ class ManageAppointments {
 
       switch (choice) {
         case 'All Appointments':
-          _displayAppointments(_doctor.getMyAppointments());
+          _displayAppointments(_controller.getMyAppointments());
+          TerminalUI.pauseAndClear();
           break;
         case "Today's Appointments":
-          _displayAppointments(_doctor.getTodaysAppointments());
+          final now = DateTime.now();
+          final startOfDay = DateTime(now.year, now.month, now.day);
+          final endOfDay = startOfDay.add(const Duration(days: 1));
+          _displayAppointments(
+            _controller.getMyUpcomingAppointments(startOfDay, endOfDay),
+          );
+          TerminalUI.pauseAndClear();
           break;
         case 'Upcoming Appointments':
           final now = DateTime.now();
           final end = now.add(const Duration(days: 30));
-          _displayAppointments(_doctor.getUpcomingAppointments(now, end));
+          _displayAppointments(_controller.getMyUpcomingAppointments(now, end));
+          TerminalUI.pauseAndClear();
           break;
         case 'Past Appointments':
-          _displayAppointments(_doctor.getPastAppointments());
+          final now2 = DateTime.now();
+          _displayAppointments(
+            _controller
+                .getMyAppointments()
+                .where((a) => a.appointmentDateTime.isBefore(now2))
+                .toList(),
+          );
+          TerminalUI.pauseAndClear();
           break;
         case 'Back':
           return;
@@ -118,14 +139,18 @@ class ManageAppointments {
   }
 
   void _viewAppointmentDetails() {
-    print('\n🔎 VIEW APPOINTMENT DETAILS');
+    print('\nVIEW APPOINTMENT DETAILS');
     print('-' * 50);
-    final id = prompts.get('Appointment ID:');
-    final appointment = _doctor.getAppointmentById(id.trim());
-    if (appointment == null) {
-      print('\n❌ Appointment not found for you.');
+    final list = _controller.getMyAppointments();
+    if (list.isEmpty) {
+      print('\nNo appointments.');
       return;
     }
+
+    final options = formatCardOptions(list);
+    final chosen = prompts.choose('Select an appointment:', options);
+    final idx = options.indexOf(chosen!);
+    final appointment = list[idx];
 
     _displayAppointments([appointment]);
 
@@ -134,33 +159,37 @@ class ManageAppointments {
     if (action == 'Complete Appointment') {
       final diagnosis = prompts.get('Diagnosis:');
       final notes = prompts.get('Notes (optional):');
-      final ok = _doctor.completeAppointment(
+      final ok = _controller.completeAppointment(
         appointmentId: appointment.id,
         diagnosis: diagnosis.trim(),
         notes: notes.trim().isEmpty ? null : notes.trim(),
       );
       if (ok) {
-        print('\n✅ Appointment completed.');
+        print('\nAppointment completed.');
         final askRx = prompts.getBool('Issue Prescription now? (y/n)');
         if (askRx) {
           // handled by prescriptions module from doctor menu
-          print('\n➡️  Go to Manage Prescriptions > Issue Prescription');
+          print('\nGo to Manage Prescriptions > Issue Prescription');
         }
       } else {
-        print('\n❌ Failed to complete appointment.');
+        print('\nFailed to complete appointment.');
       }
     }
   }
 
   void _cancelAppointment() {
-    print('\n❌ CANCEL APPOINTMENT');
+    print('\nCANCEL APPOINTMENT');
     print('-' * 50);
-    final id = prompts.get('Appointment ID:');
-    final appt = _doctor.getAppointmentById(id.trim());
-    if (appt == null) {
-      print('\n❌ Appointment not found for you.');
+    final appts = _controller.getMyAppointments();
+    if (appts.isEmpty) {
+      print('\nNo appointments.');
       return;
     }
+
+    final options = formatCardOptions(appts);
+    final chosen = prompts.choose('Select an appointment to cancel:', options);
+    final idx = options.indexOf(chosen!);
+    final appt = appts[idx];
 
     // Business rule: only cancel if >24h in future
     final now = DateTime.now();
@@ -172,11 +201,11 @@ class ManageAppointments {
     final confirm = prompts.getBool('Confirm cancel? (y/n)');
     if (!confirm) return;
 
-    final ok = _doctor.cancelAppointment(id.trim());
+    final ok = _controller.cancelAppointment(appt.id);
     if (ok) {
-      print('\n✅ Appointment cancelled.');
+      print('\nAppointment cancelled.');
     } else {
-      print('\n❌ Failed to cancel appointment.');
+      print('\nFailed to cancel appointment.');
     }
   }
 

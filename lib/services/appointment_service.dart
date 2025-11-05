@@ -10,10 +10,11 @@
 library;
 
 import 'package:dart_clinic/domain/models/status.dart';
-import 'package:dart_clinic/service/session_service.dart';
+import 'package:dart_clinic/services/session_service.dart';
 
 import '../domain/models/appointment.dart';
 import '../data/appointment_repo.dart';
+import 'package:uuid/uuid.dart';
 
 class AppointmentService {
   final AppointmentRepository _appointmentRepository;
@@ -23,15 +24,27 @@ class AppointmentService {
 
   /// Create a new appointment
   AppointmentModel? createAppointment({
-    required String appointmentId,
     required String patientId,
     required DateTime appointmentDateTime,
     String? notes,
   }) {
     final currentDoctor = SessionService().currentDoctor;
     if (currentDoctor == null) return null;
+    final String id = const Uuid().v4();
+    // Uniqueness check
+    if (_appointmentRepository.getById(id) != null) {
+      return null;
+    }
+    // Overlap check: block same doctor same timeslot (exact timestamp)
+    final existsSameSlot = _appointmentRepository.getAll().any(
+      (a) =>
+          a.doctorId == currentDoctor.id &&
+          a.appointmentDateTime == appointmentDateTime &&
+          a.status != AppointmentStatus.cancelled,
+    );
+    if (existsSameSlot) return null;
     final appointment = AppointmentModel(
-      id: appointmentId,
+      id: id,
       doctorId: currentDoctor.id,
       patientId: patientId,
       appointmentDateTime: appointmentDateTime,
@@ -50,6 +63,18 @@ class AppointmentService {
     }
     final currentDoctor = SessionService().currentDoctor;
     if (currentDoctor != null && appointment.doctorId != currentDoctor.id) {
+      return false;
+    }
+    // Cannot cancel completed or already cancelled
+    if (appointment.status == AppointmentStatus.completed ||
+        appointment.status == AppointmentStatus.cancelled) {
+      return false;
+    }
+    // Enforce 24h window
+    final now = DateTime.now();
+    if (!appointment.appointmentDateTime.isAfter(
+      now.add(const Duration(hours: 24)),
+    )) {
       return false;
     }
 
@@ -93,6 +118,11 @@ class AppointmentService {
     }
     final currentDoctor = SessionService().currentDoctor;
     if (currentDoctor != null && appointment.doctorId != currentDoctor.id) {
+      return false;
+    }
+    // Cannot complete if already cancelled or completed
+    if (appointment.status == AppointmentStatus.cancelled ||
+        appointment.status == AppointmentStatus.completed) {
       return false;
     }
 

@@ -14,6 +14,7 @@ import 'package:dart_clinic/domain/models/status.dart';
 import '../domain/models/admission.dart';
 import '../data/admission_repo.dart';
 import '../data/room_repo.dart';
+import 'package:uuid/uuid.dart';
 
 class AdmissionService {
   final AdmissionRepository _admissionRepository;
@@ -27,11 +28,15 @@ class AdmissionService {
 
   /// Admit a patient to a room
   AdmissionModel? admitPatient({
-    required String admissionId,
     required String patientId,
     required String roomId,
     String? notes,
   }) {
+    // Uniqueness check
+    final String id = const Uuid().v4();
+    if (_admissionRepository.getById(id) != null) {
+      return null;
+    }
     // Check if room is available
     final room = _roomRepository.getById(roomId);
     if (room == null || room.isOccupied) {
@@ -46,7 +51,7 @@ class AdmissionService {
 
     // Create admission record
     final admission = AdmissionModel(
-      id: admissionId,
+      id: id,
       patientId: patientId,
       roomId: roomId,
       admissionDate: DateTime.now(),

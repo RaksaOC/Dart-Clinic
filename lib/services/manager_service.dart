@@ -9,6 +9,7 @@ library;
 
 import '../domain/models/manager.dart';
 import '../data/manager_repo.dart';
+import 'package:uuid/uuid.dart';
 
 class ManagerService {
   final ManagerRepository _managerRepository;
@@ -16,10 +17,8 @@ class ManagerService {
   ManagerService([ManagerRepository? repository])
     : _managerRepository = repository ?? ManagerRepository();
 
-
   /// Create a new manager
   ManagerModel? createManager({
-    required String managerId,
     required String name,
     required String email,
     required String password,
@@ -28,8 +27,13 @@ class ManagerService {
     required String phoneNumber,
     required String address,
   }) {
+    final String id = const Uuid().v4();
+    // Uniqueness check
+    if (_managerRepository.getById(id) != null) {
+      return null;
+    }
     final manager = ManagerModel(
-      id: managerId,
+      id: id,
       name: name,
       email: email,
       password: password,

@@ -10,6 +10,7 @@ library;
 
 import '../domain/models/room.dart';
 import '../data/room_repo.dart';
+import 'package:uuid/uuid.dart';
 
 class RoomService {
   final RoomRepository _roomRepository;
@@ -41,14 +42,18 @@ class RoomService {
 
   /// Create a new room
   RoomModel? createRoom({
-    required String roomId,
     required String roomNumber,
     required String roomType,
     required double dailyRate,
     String? notes,
   }) {
+    final String id = const Uuid().v4();
+    // Uniqueness check
+    if (_roomRepository.getById(id) != null) {
+      return null;
+    }
     final room = RoomModel(
-      id: roomId,
+      id: id,
       roomNumber: roomNumber,
       roomType: roomType,
       dailyRate: dailyRate,

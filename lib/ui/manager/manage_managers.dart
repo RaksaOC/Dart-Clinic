@@ -5,18 +5,21 @@ library;
 
 import 'package:prompts/prompts.dart' as prompts;
 import '../../domain/models/manager.dart';
-import '../../domain/usecases/manager.dart';
-import 'package:dart_clinic/service/session_service.dart';
+import '../../domain/controllers/manager/managers_controller.dart';
+import 'package:dart_clinic/services/session_service.dart';
+import 'package:dart_clinic/utils/formatter.dart';
+import 'package:dart_clinic/utils/terminal.dart';
 
 class ManageManagers {
-  final Manager _manager;
+  final ManagersController _manager;
 
-  ManageManagers() : _manager = Manager();
+  ManageManagers() : _manager = ManagersController();
 
   void display() {
     while (true) {
+      TerminalUI.clearScreen();
       print('\n' + '=' * 50);
-      print('👔 MANAGE MANAGERS');
+      print('MANAGE MANAGERS');
       print('=' * 50);
 
       final choice = prompts.choose('\nWhat would you like to do?', [
@@ -30,15 +33,19 @@ class ManageManagers {
       switch (choice) {
         case 'Create Manager':
           _createManager();
+          TerminalUI.pauseAndClear();
           break;
         case 'View All Managers':
           _viewAllManagers();
+          TerminalUI.pauseAndClear();
           break;
         case 'Update Manager':
           _updateManager();
+          TerminalUI.pauseAndClear();
           break;
         case 'Delete Manager':
           _deleteManager();
+          TerminalUI.pauseAndClear();
           break;
         case 'Back to Main Menu':
           return;
@@ -47,11 +54,10 @@ class ManageManagers {
   }
 
   void _createManager() {
-    print('\n👔 CREATE MANAGER');
+    print('\nCREATE MANAGER');
     print('-' * 50);
 
     try {
-      final managerId = prompts.get('Manager ID (e.g., M001):');
       final name = prompts.get('Name:');
       final email = prompts.get('Email:');
       final password = prompts.get('Password:');
@@ -61,7 +67,6 @@ class ManageManagers {
       final address = prompts.get('Address:');
 
       final manager = _manager.createManager(
-        managerId: managerId.trim(),
         name: name.trim(),
         email: email.trim(),
         password: password,
@@ -72,19 +77,19 @@ class ManageManagers {
       );
 
       if (manager != null) {
-        print('\n✅ Manager created successfully!');
+        print('\nManager created successfully.');
         print('Manager ID: ${manager.id}');
         print('Name: ${manager.name}');
       } else {
-        print('\n❌ Failed to create manager. Manager ID might already exist.');
+        print('\nFailed to create manager. Manager ID might already exist.');
       }
     } catch (e) {
-      print('\n❌ Error: ${e.toString()}');
+      print('\nError: ${e.toString()}');
     }
   }
 
   void _viewAllManagers() {
-    print('\n👔 ALL MANAGERS');
+    print('\nALL MANAGERS');
     print('-' * 50);
     final managers = _manager.getAllManagers();
     if (managers.isEmpty) {
@@ -92,27 +97,25 @@ class ManageManagers {
       return;
     }
 
-    print(
-      '\n${'ID'.padRight(8)} ${'Name'.padRight(25)} ${'Email'.padRight(30)}',
-    );
-    print('-' * 70);
-    for (final manager in managers) {
-      print(
-        '${manager.id.padRight(8)} ${manager.name.padRight(25)} ${manager.email.padRight(30)}',
-      );
+    final options = formatCardOptions(managers);
+    for (final line in options) {
+      print(line);
     }
   }
 
   void _updateManager() {
-    print('\n✏️  UPDATE MANAGER');
+    print('\nUPDATE MANAGER');
     print('-' * 50);
-    final managerId = prompts.get('Enter Manager ID to update:');
-    final manager = _manager.getManagerById(managerId.trim());
-
-    if (manager == null) {
-      print('\n❌ Manager not found.');
+    final managers = _manager.getAllManagers();
+    if (managers.isEmpty) {
+      print('\nNo managers found.');
       return;
     }
+
+    final options = formatCardOptions(managers);
+    final chosen = prompts.choose('Select a manager to update:', options);
+    final idx = options.indexOf(chosen!);
+    final manager = managers[idx];
 
     print('\nCurrent Manager Details:');
     print('Name: ${manager.name}');
@@ -139,26 +142,30 @@ class ManageManagers {
     );
 
     if (_manager.updateManager(updatedManager)) {
-      print('\n✅ Manager updated successfully!');
+      print('\nManager updated successfully.');
     } else {
-      print('\n❌ Failed to update manager.');
+      print('\nFailed to update manager.');
     }
   }
 
   void _deleteManager() {
-    print('\n🗑️  DELETE MANAGER');
+    print('\nDELETE MANAGER');
     print('-' * 50);
-    final managerId = prompts.get('Enter Manager ID to delete:');
-    final manager = _manager.getManagerById(managerId.trim());
-
-    if (manager == null) {
-      print('\n❌ Manager not found.');
+    final managers = _manager.getAllManagers();
+    if (managers.isEmpty) {
+      print('\nNo managers found.');
       return;
     }
 
+    final options = formatCardOptions(managers);
+    final chosen = prompts.choose('Select a manager to delete:', options);
+    final idx = options.indexOf(chosen!);
+    final manager = managers[idx];
+
     // Prevent deleting yourself
-    if (SessionService().currentManager != null && manager.id == SessionService().currentManager!.id) {
-      print('\n❌ Cannot delete yourself.');
+    if (SessionService().currentManager != null &&
+        manager.id == SessionService().currentManager!.id) {
+      print('\nCannot delete yourself.');
       return;
     }
 
@@ -166,10 +173,10 @@ class ManageManagers {
       'Are you sure you want to delete this manager? (y/n)',
     );
     if (confirm) {
-      if (_manager.deleteManager(managerId.trim())) {
-        print('\n✅ Manager deleted successfully!');
+      if (_manager.deleteManager(manager.id)) {
+        print('\nManager deleted successfully.');
       } else {
-        print('\n❌ Failed to delete manager.');
+        print('\nFailed to delete manager.');
       }
     }
   }

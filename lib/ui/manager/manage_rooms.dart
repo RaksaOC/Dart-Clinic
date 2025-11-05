@@ -5,17 +5,20 @@ library;
 
 import 'package:prompts/prompts.dart' as prompts;
 import '../../domain/models/room.dart';
-import '../../domain/usecases/manager.dart';
+import '../../domain/controllers/manager/rooms_controller.dart';
+import 'package:dart_clinic/utils/formatter.dart';
+import 'package:dart_clinic/utils/terminal.dart';
 
 class ManageRooms {
-  final Manager _manager;
+  final RoomsController _manager;
 
-  ManageRooms() : _manager = Manager();
+  ManageRooms() : _manager = RoomsController();
 
   void display() {
     while (true) {
+      TerminalUI.clearScreen();
       print('\n' + '=' * 50);
-      print('🏥 MANAGE ROOMS');
+      print('MANAGE ROOMS');
       print('=' * 50);
 
       final choice = prompts.choose('\nWhat would you like to do?', [
@@ -32,24 +35,31 @@ class ManageRooms {
       switch (choice) {
         case 'Create Room':
           _createRoom();
+          TerminalUI.pauseAndClear();
           break;
         case 'View All Rooms':
           _viewAllRooms();
+          TerminalUI.pauseAndClear();
           break;
         case 'View Available Rooms':
           _viewAvailableRooms();
+          TerminalUI.pauseAndClear();
           break;
         case 'View Occupied Rooms':
           _viewOccupiedRooms();
+          TerminalUI.pauseAndClear();
           break;
         case 'Update Room':
           _updateRoom();
+          TerminalUI.pauseAndClear();
           break;
         case 'Delete Room':
           _deleteRoom();
+          TerminalUI.pauseAndClear();
           break;
         case 'View Room Occupancy Stats':
           _viewOccupancyStats();
+          TerminalUI.pauseAndClear();
           break;
         case 'Back to Main Menu':
           return;
@@ -58,7 +68,7 @@ class ManageRooms {
   }
 
   void _createRoom() {
-    print('\n🏥 CREATE ROOM');
+    print('\nCREATE ROOM');
     print('-' * 50);
 
     try {
@@ -84,13 +94,13 @@ class ManageRooms {
       );
 
       if (room != null) {
-        print('\n✅ Room created successfully!');
+        print('\nRoom created successfully.');
         print('Room ID: ${room.id}');
         print('Room Number: ${room.roomNumber}');
         print('Type: ${room.roomType}');
         print('Daily Rate: \$${room.dailyRate.toStringAsFixed(2)}');
       } else {
-        print('\n❌ Failed to create room. Room ID might already exist.');
+        print('\nFailed to create room. Room ID might already exist.');
       }
     } catch (e) {
       print('\n❌ Error: ${e.toString()}');
@@ -98,62 +108,60 @@ class ManageRooms {
   }
 
   void _viewAllRooms() {
-    print('\n🏥 ALL ROOMS');
+    print('\nALL ROOMS');
     print('-' * 50);
     final rooms = _manager.getAllRooms();
     if (rooms.isEmpty) {
       print('\nNo rooms found.');
       return;
     }
-    _displayRooms(rooms);
+    final options = formatCardOptions(rooms);
+    for (final line in options) {
+      print(line);
+    }
   }
 
   void _viewAvailableRooms() {
-    print('\n✅ AVAILABLE ROOMS');
+    print('\nAVAILABLE ROOMS');
     print('-' * 50);
     final rooms = _manager.getAvailableRooms();
     if (rooms.isEmpty) {
       print('\nNo available rooms.');
       return;
     }
-    _displayRooms(rooms);
+    final options = formatCardOptions(rooms);
+    for (final line in options) {
+      print(line);
+    }
   }
 
   void _viewOccupiedRooms() {
-    print('\n🔴 OCCUPIED ROOMS');
+    print('\nOCCUPIED ROOMS');
     print('-' * 50);
     final rooms = _manager.getOccupiedRooms();
     if (rooms.isEmpty) {
       print('\nNo occupied rooms.');
       return;
     }
-    _displayRooms(rooms);
-  }
-
-  void _displayRooms(List<RoomModel> rooms) {
-    print(
-      '\n${'ID'.padRight(8)} ${'Room #'.padRight(10)} ${'Type'.padRight(12)} ${'Rate'.padRight(10)} ${'Status'.padRight(12)} ${'Patient ID'.padRight(12)}',
-    );
-    print('-' * 80);
-    for (final room in rooms) {
-      final status = room.isOccupied ? '🔴 Occupied' : '✅ Available';
-      final patientId = room.patientId ?? 'N/A';
-      print(
-        '${room.id.padRight(8)} ${room.roomNumber.padRight(10)} ${room.roomType.padRight(12)} \$${room.dailyRate.toStringAsFixed(2).padLeft(8)} ${status.padRight(12)} ${patientId.padRight(12)}',
-      );
+    final options = formatCardOptions(rooms);
+    for (final line in options) {
+      print(line);
     }
   }
 
   void _updateRoom() {
-    print('\n✏️  UPDATE ROOM');
+    print('\nUPDATE ROOM');
     print('-' * 50);
-    final roomId = prompts.get('Enter Room ID to update:');
-    final room = _manager.getRoomById(roomId.trim());
-
-    if (room == null) {
-      print('\n❌ Room not found.');
+    final rooms = _manager.getAllRooms();
+    if (rooms.isEmpty) {
+      print('\nNo rooms found.');
       return;
     }
+
+    final options = formatCardOptions(rooms);
+    final chosen = prompts.choose('Select a room to update:', options);
+    final idx = options.indexOf(chosen!);
+    final room = rooms[idx];
 
     print('\nCurrent Room Details:');
     print('Room Number: ${room.roomNumber}');
@@ -192,25 +200,28 @@ class ManageRooms {
     );
 
     if (_manager.updateRoom(updatedRoom)) {
-      print('\n✅ Room updated successfully!');
+      print('\nRoom updated successfully.');
     } else {
-      print('\n❌ Failed to update room.');
+      print('\nFailed to update room.');
     }
   }
 
   void _deleteRoom() {
-    print('\n🗑️  DELETE ROOM');
+    print('\nDELETE ROOM');
     print('-' * 50);
-    final roomId = prompts.get('Enter Room ID to delete:');
-    final room = _manager.getRoomById(roomId.trim());
-
-    if (room == null) {
-      print('\n❌ Room not found.');
+    final rooms = _manager.getAllRooms();
+    if (rooms.isEmpty) {
+      print('\nNo rooms found.');
       return;
     }
 
+    final options = formatCardOptions(rooms);
+    final chosen = prompts.choose('Select a room to delete:', options);
+    final idx = options.indexOf(chosen!);
+    final room = rooms[idx];
+
     if (room.isOccupied) {
-      print('\n❌ Cannot delete room. Room is currently occupied.');
+      print('\nCannot delete room. Room is currently occupied.');
       return;
     }
 
@@ -218,16 +229,16 @@ class ManageRooms {
       'Are you sure you want to delete this room? (y/n)',
     );
     if (confirm) {
-      if (_manager.deleteRoom(roomId.trim())) {
-        print('\n✅ Room deleted successfully!');
+      if (_manager.deleteRoom(room.id)) {
+        print('\nRoom deleted successfully.');
       } else {
-        print('\n❌ Failed to delete room.');
+        print('\nFailed to delete room.');
       }
     }
   }
 
   void _viewOccupancyStats() {
-    print('\n📊 ROOM OCCUPANCY STATISTICS');
+    print('\nROOM OCCUPANCY STATISTICS');
     print('-' * 50);
     final stats = _manager.getOccupancyStats();
     print('\nTotal Rooms: ${stats['totalRooms']}');

@@ -5,17 +5,20 @@ library;
 
 import 'package:prompts/prompts.dart' as prompts;
 import '../../domain/models/doctor.dart';
-import '../../domain/usecases/manager.dart';
+import '../../domain/controllers/manager/doctors_controller.dart';
+import 'package:dart_clinic/utils/formatter.dart';
+import 'package:dart_clinic/utils/terminal.dart';
 
 class ManageDoctors {
-  final Manager _manager;
+  final DoctorsController _manager;
 
-  ManageDoctors() : _manager = Manager();
+  ManageDoctors() : _manager = DoctorsController();
 
   void display() {
     while (true) {
+      TerminalUI.clearScreen();
       print('\n' + '=' * 50);
-      print('👨‍⚕️  MANAGE DOCTORS');
+      print('MANAGE DOCTORS');
       print('=' * 50);
 
       final choice = prompts.choose('\nWhat would you like to do?', [
@@ -31,21 +34,27 @@ class ManageDoctors {
       switch (choice) {
         case 'Create Doctor':
           _createDoctor();
+          TerminalUI.pauseAndClear();
           break;
         case 'View All Doctors':
           _viewAllDoctors();
+          TerminalUI.pauseAndClear();
           break;
         case 'Search Doctors by Name':
           _searchDoctorsByName();
+          TerminalUI.pauseAndClear();
           break;
         case 'View Doctors by Specialization':
           _viewDoctorsBySpecialization();
+          TerminalUI.pauseAndClear();
           break;
         case 'Update Doctor':
           _updateDoctor();
+          TerminalUI.pauseAndClear();
           break;
         case 'Delete Doctor':
           _deleteDoctor();
+          TerminalUI.pauseAndClear();
           break;
         case 'Back to Main Menu':
           return;
@@ -54,7 +63,7 @@ class ManageDoctors {
   }
 
   void _createDoctor() {
-    print('\n👨‍⚕️  CREATE DOCTOR');
+    print('\nCREATE DOCTOR');
     print('-' * 50);
 
     try {
@@ -81,12 +90,12 @@ class ManageDoctors {
       );
 
       if (doctor != null) {
-        print('\n✅ Doctor created successfully!');
+        print('\nDoctor created successfully.');
         print('Doctor ID: ${doctor.id}');
         print('Name: ${doctor.name}');
         print('Specialization: ${doctor.specialization}');
       } else {
-        print('\n❌ Failed to create doctor. Doctor ID might already exist.');
+        print('\nFailed to create doctor. Doctor ID might already exist.');
       }
     } catch (e) {
       print('\n❌ Error: ${e.toString()}');
@@ -94,18 +103,21 @@ class ManageDoctors {
   }
 
   void _viewAllDoctors() {
-    print('\n👨‍⚕️  ALL DOCTORS');
+    print('\nALL DOCTORS');
     print('-' * 50);
     final doctors = _manager.getAllDoctors();
     if (doctors.isEmpty) {
       print('\nNo doctors found.');
       return;
     }
-    _displayDoctors(doctors);
+    final options = formatCardOptions(doctors);
+    for (final line in options) {
+      print(line);
+    }
   }
 
   void _searchDoctorsByName() {
-    print('\n🔍 SEARCH DOCTORS BY NAME');
+    print('\nSEARCH DOCTORS BY NAME');
     print('-' * 50);
     final name = prompts.get('Enter doctor name to search:');
     final doctors = _manager.searchDoctorsByName(name.trim());
@@ -113,11 +125,14 @@ class ManageDoctors {
       print('\nNo doctors found.');
       return;
     }
-    _displayDoctors(doctors);
+    final options = formatCardOptions(doctors);
+    for (final line in options) {
+      print(line);
+    }
   }
 
   void _viewDoctorsBySpecialization() {
-    print('\n🔍 VIEW DOCTORS BY SPECIALIZATION');
+    print('\nVIEW DOCTORS BY SPECIALIZATION');
     print('-' * 50);
     final specialization = prompts.get('Enter specialization:');
     final doctors = _manager.getDoctorsBySpecialization(specialization.trim());
@@ -125,31 +140,25 @@ class ManageDoctors {
       print('\nNo doctors found with this specialization.');
       return;
     }
-    _displayDoctors(doctors);
-  }
-
-  void _displayDoctors(List<DoctorModel> doctors) {
-    print(
-      '\n${'ID'.padRight(8)} ${'Name'.padRight(25)} ${'Specialization'.padRight(20)} ${'Email'.padRight(25)}',
-    );
-    print('-' * 90);
-    for (final doctor in doctors) {
-      print(
-        '${doctor.id.padRight(8)} ${doctor.name.padRight(25)} ${doctor.specialization.padRight(20)} ${doctor.email.padRight(25)}',
-      );
+    final options = formatCardOptions(doctors);
+    for (final line in options) {
+      print(line);
     }
   }
 
   void _updateDoctor() {
-    print('\n✏️  UPDATE DOCTOR');
+    print('\nUPDATE DOCTOR');
     print('-' * 50);
-    final doctorId = prompts.get('Enter Doctor ID to update:');
-    final doctor = _manager.getDoctorById(doctorId.trim());
-
-    if (doctor == null) {
-      print('\n❌ Doctor not found.');
+    final doctors = _manager.getAllDoctors();
+    if (doctors.isEmpty) {
+      print('\nNo doctors found.');
       return;
     }
+
+    final options = formatCardOptions(doctors);
+    final chosen = prompts.choose('Select a doctor to update:', options);
+    final idx = options.indexOf(chosen!);
+    final doctor = doctors[idx];
 
     print('\nCurrent Doctor Details:');
     print('Name: ${doctor.name}');
@@ -183,31 +192,34 @@ class ManageDoctors {
     );
 
     if (_manager.updateDoctor(updatedDoctor)) {
-      print('\n✅ Doctor updated successfully!');
+      print('\nDoctor updated successfully.');
     } else {
-      print('\n❌ Failed to update doctor.');
+      print('\nFailed to update doctor.');
     }
   }
 
   void _deleteDoctor() {
-    print('\n🗑️  DELETE DOCTOR');
+    print('\nDELETE DOCTOR');
     print('-' * 50);
-    final doctorId = prompts.get('Enter Doctor ID to delete:');
-    final doctor = _manager.getDoctorById(doctorId.trim());
-
-    if (doctor == null) {
-      print('\n❌ Doctor not found.');
+    final doctors = _manager.getAllDoctors();
+    if (doctors.isEmpty) {
+      print('\nNo doctors found.');
       return;
     }
+
+    final options = formatCardOptions(doctors);
+    final chosen = prompts.choose('Select a doctor to delete:', options);
+    final idx = options.indexOf(chosen!);
+    final doctor = doctors[idx];
 
     final confirm = prompts.getBool(
       'Are you sure you want to delete this doctor? (y/n)',
     );
     if (confirm) {
-      if (_manager.deleteDoctor(doctorId.trim())) {
-        print('\n✅ Doctor deleted successfully!');
+      if (_manager.deleteDoctor(doctor.id)) {
+        print('\nDoctor deleted successfully.');
       } else {
-        print('\n❌ Failed to delete doctor.');
+        print('\nFailed to delete doctor.');
       }
     }
   }

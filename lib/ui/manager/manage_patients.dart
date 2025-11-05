@@ -5,17 +5,20 @@ library;
 
 import 'package:prompts/prompts.dart' as prompts;
 import '../../domain/models/patient.dart';
-import '../../domain/usecases/manager.dart';
+import '../../domain/controllers/manager/patients_controller.dart';
+import 'package:dart_clinic/utils/formatter.dart';
+import 'package:dart_clinic/utils/terminal.dart';
 
 class ManagePatients {
-  final Manager _manager;
+  final PatientsController _manager;
 
-  ManagePatients() : _manager = Manager();
+  ManagePatients() : _manager = PatientsController();
 
   void display() {
     while (true) {
+      TerminalUI.clearScreen();
       print('\n' + '=' * 50);
-      print('👤 MANAGE PATIENTS');
+      print('MANAGE PATIENTS');
       print('=' * 50);
 
       final choice = prompts.choose('\nWhat would you like to do?', [
@@ -30,18 +33,19 @@ class ManagePatients {
       switch (choice) {
         case 'Create Patient':
           _createPatient();
+          TerminalUI.pauseAndClear();
           break;
         case 'View All Patients':
           _viewAllPatients();
-          break;
-        case 'Search Patients by Name':
-          _searchPatientsByName();
+          TerminalUI.pauseAndClear();
           break;
         case 'Update Patient':
           _updatePatient();
+          TerminalUI.pauseAndClear();
           break;
         case 'Delete Patient':
           _deletePatient();
+          TerminalUI.pauseAndClear();
           break;
         case 'Back to Main Menu':
           return;
@@ -50,11 +54,10 @@ class ManagePatients {
   }
 
   void _createPatient() {
-    print('\n👤 CREATE PATIENT');
+    print('\nCREATE PATIENT');
     print('-' * 50);
 
     try {
-      final patientId = prompts.get('Patient ID (e.g., P001):');
       final name = prompts.get('Name:');
       final age = int.parse(prompts.get('Age:'));
       final gender = prompts.choose('Gender:', ['Male', 'Female', 'Other']);
@@ -63,7 +66,6 @@ class ManagePatients {
       final address = prompts.get('Address:');
 
       final patient = _manager.createPatient(
-        patientId: patientId.trim(),
         name: name.trim(),
         age: age,
         gender: gender ?? '',
@@ -73,62 +75,44 @@ class ManagePatients {
       );
 
       if (patient != null) {
-        print('\n✅ Patient created successfully!');
+        print('\nPatient created successfully.');
         print('Patient ID: ${patient.id}');
         print('Name: ${patient.name}');
       } else {
-        print('\n❌ Failed to create patient. Patient ID might already exist.');
+        print('\nFailed to create patient. Patient ID might already exist.');
       }
     } catch (e) {
-      print('\n❌ Error: ${e.toString()}');
+      print('\nError: ${e.toString()}');
     }
   }
 
   void _viewAllPatients() {
-    print('\n👤 ALL PATIENTS');
+    print('\nALL PATIENTS');
     print('-' * 50);
     final patients = _manager.getAllPatients();
     if (patients.isEmpty) {
       print('\nNo patients found.');
       return;
     }
-    _displayPatients(patients);
-  }
-
-  void _searchPatientsByName() {
-    print('\n🔍 SEARCH PATIENTS BY NAME');
-    print('-' * 50);
-    final name = prompts.get('Enter patient name to search:');
-    final patients = _manager.searchPatientsByName(name.trim());
-    if (patients.isEmpty) {
-      print('\nNo patients found.');
-      return;
-    }
-    _displayPatients(patients);
-  }
-
-  void _displayPatients(List<PatientModel> patients) {
-    print(
-      '\n${'ID'.padRight(8)} ${'Name'.padRight(25)} ${'Age'.padRight(6)} ${'Gender'.padRight(8)} ${'Email'.padRight(25)}',
-    );
-    print('-' * 80);
-    for (final patient in patients) {
-      print(
-        '${patient.id.padRight(8)} ${patient.name.padRight(25)} ${patient.age.toString().padRight(6)} ${patient.gender.padRight(8)} ${patient.email.padRight(25)}',
-      );
+    final options = formatCardOptions(patients);
+    for (final line in options) {
+      print(line);
     }
   }
 
   void _updatePatient() {
-    print('\n✏️  UPDATE PATIENT');
+    print('\nUPDATE PATIENT');
     print('-' * 50);
-    final patientId = prompts.get('Enter Patient ID to update:');
-    final patient = _manager.getPatientById(patientId.trim());
-
-    if (patient == null) {
-      print('\n❌ Patient not found.');
+    final patients = _manager.getAllPatients();
+    if (patients.isEmpty) {
+      print('\nNo patients found.');
       return;
     }
+
+    final options = formatCardOptions(patients);
+    final chosen = prompts.choose('Select a patient to update:', options);
+    final idx = options.indexOf(chosen!);
+    final patient = patients[idx];
 
     print('\nCurrent Patient Details:');
     print('Name: ${patient.name}');
@@ -157,42 +141,36 @@ class ManagePatients {
     );
 
     if (_manager.updatePatient(updatedPatient)) {
-      print('\n✅ Patient updated successfully!');
+      print('\nPatient updated successfully.');
     } else {
-      print('\n❌ Failed to update patient.');
+      print('\nFailed to update patient.');
     }
   }
 
   void _deletePatient() {
-    print('\n🗑️  DELETE PATIENT');
+    print('\nDELETE PATIENT');
     print('-' * 50);
-    final patientId = prompts.get('Enter Patient ID to delete:');
-    final patient = _manager.getPatientById(patientId.trim());
-
-    if (patient == null) {
-      print('\n❌ Patient not found.');
+    final patients = _manager.getAllPatients();
+    if (patients.isEmpty) {
+      print('\nNo patients found.');
       return;
     }
 
-    // Check if patient is admitted
-    final activeAdmission = _manager.getActiveAdmissionByPatientId(
-      patientId.trim(),
-    );
-    if (activeAdmission != null) {
-      print(
-        '\n❌ Cannot delete patient. Patient is currently admitted to a room.',
-      );
-      return;
-    }
+    final options = formatCardOptions(patients);
+    final chosen = prompts.choose('Select a patient to delete:', options);
+    final idx = options.indexOf(chosen!);
+    final patient = patients[idx];
+
+    // Admission check is handled inside controller deletePatient()
 
     final confirm = prompts.getBool(
       'Are you sure you want to delete this patient? (y/n)',
     );
     if (confirm) {
-      if (_manager.deletePatient(patientId.trim())) {
-        print('\n✅ Patient deleted successfully!');
+      if (_manager.deletePatient(patient.id)) {
+        print('\nPatient deleted successfully.');
       } else {
-        print('\n❌ Failed to delete patient.');
+        print('\nFailed to delete patient.');
       }
     }
   }

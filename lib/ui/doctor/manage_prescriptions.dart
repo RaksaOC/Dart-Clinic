@@ -5,17 +5,20 @@ library;
 
 import 'package:prompts/prompts.dart' as prompts;
 import '../../domain/models/prescription.dart';
-import '../../domain/usecases/doctor.dart';
+import '../../domain/controllers/doctor/prescriptions_controller.dart';
+import 'package:dart_clinic/utils/formatter.dart';
+import 'package:dart_clinic/utils/terminal.dart';
 
 class ManagePrescriptions {
-  final Doctor _doctor;
+  final PrescriptionsController _controller;
 
-  ManagePrescriptions() : _doctor = Doctor();
+  ManagePrescriptions() : _controller = PrescriptionsController();
 
   void display() {
     while (true) {
+      TerminalUI.clearScreen();
       print('\n' + '=' * 50);
-      print('💊 MANAGE PRESCRIPTIONS');
+      print('MANAGE PRESCRIPTIONS');
       print('=' * 50);
 
       final choice = prompts.choose('\nWhat would you like to do?', [
@@ -29,15 +32,19 @@ class ManagePrescriptions {
       switch (choice) {
         case 'Issue Prescription':
           _issuePrescription();
+          TerminalUI.pauseAndClear();
           break;
         case 'View My Prescriptions':
-          _displayPrescriptions(_doctor.getMyPrescriptions());
+          _displayPrescriptions(_controller.getMyPrescriptions());
+          TerminalUI.pauseAndClear();
           break;
         case 'View Patient Prescriptions':
           _viewPatientPrescriptions();
+          TerminalUI.pauseAndClear();
           break;
         case 'View Prescription Details':
           _viewPrescriptionDetails();
+          TerminalUI.pauseAndClear();
           break;
         case 'Back to Doctor Dashboard':
           return;
@@ -46,10 +53,9 @@ class ManagePrescriptions {
   }
 
   void _issuePrescription() {
-    print('\n📝 ISSUE PRESCRIPTION');
+    print('\nISSUE PRESCRIPTION');
     print('-' * 50);
     try {
-      final id = prompts.get('Prescription ID (e.g., RX001):');
       final patientId = prompts.get('Patient ID:');
       final medication = prompts.get('Medication Name:');
       final dosage = prompts.get('Dosage (e.g., 500mg):');
@@ -64,8 +70,7 @@ class ManagePrescriptions {
         return;
       }
 
-      final rx = _doctor.issuePrescription(
-        prescriptionId: id.trim(),
+      final rx = _controller.issuePrescription(
         patientId: patientId.trim(),
         medicationName: medication.trim(),
         dosage: dosage.trim(),
@@ -76,12 +81,12 @@ class ManagePrescriptions {
       );
 
       if (rx != null) {
-        print('\n✅ Prescription issued!');
+        print('\nPrescription issued.');
         print(
           'ID: ${rx.id}  Patient: ${rx.patientId}  Med: ${rx.medicationName}',
         );
       } else {
-        print('\n❌ Failed to issue prescription. Ensure patient exists.');
+        print('\nFailed to issue prescription. Ensure patient exists.');
       }
     } catch (e) {
       print('\n❌ Error: ${e.toString()}');
@@ -90,19 +95,22 @@ class ManagePrescriptions {
 
   void _viewPatientPrescriptions() {
     final patientId = prompts.get('Patient ID:');
-    final list = _doctor.getPatientPrescriptions(patientId.trim());
+    final list = _controller.getPatientPrescriptions(patientId.trim());
     _displayPrescriptions(list);
   }
 
   void _viewPrescriptionDetails() {
-    print('\n🔎 VIEW PRESCRIPTION DETAILS');
+    print('\nVIEW PRESCRIPTION DETAILS');
     print('-' * 50);
-    final id = prompts.get('Prescription ID:');
-    final rx = _doctor.getPrescriptionById(id.trim());
-    if (rx == null) {
-      print('\n❌ Prescription not found for you.');
+    final list = _controller.getMyPrescriptions();
+    if (list.isEmpty) {
+      print('\nNo prescriptions.');
       return;
     }
+    final options = formatCardOptions(list);
+    final chosen = prompts.choose('Select a prescription:', options);
+    final idx = options.indexOf(chosen!);
+    final rx = list[idx];
     _displayPrescriptions([rx]);
   }
 

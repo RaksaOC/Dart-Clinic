@@ -10,6 +10,7 @@ library;
 
 import '../domain/models/doctor.dart';
 import '../data/doctor_repo.dart';
+import 'package:uuid/uuid.dart';
 
 class DoctorService {
   final DoctorRepository _doctorRepository;
@@ -46,7 +47,6 @@ class DoctorService {
 
   /// Create a new doctor
   DoctorModel? createDoctor({
-    required String doctorId,
     required String name,
     required String specialization,
     required String phoneNumber,
@@ -56,8 +56,13 @@ class DoctorService {
     required String gender,
     required String password,
   }) {
+    final String id = const Uuid().v4();
+    // Uniqueness check
+    if (_doctorRepository.getById(id) != null) {
+      return null;
+    }
     final doctor = DoctorModel(
-      id: doctorId,
+      id: id,
       name: name,
       specialization: specialization,
       phoneNumber: phoneNumber,

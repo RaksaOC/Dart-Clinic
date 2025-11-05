@@ -10,6 +10,7 @@ library;
 
 import '../domain/models/patient.dart';
 import '../data/patient_repo.dart';
+import 'package:uuid/uuid.dart';
 
 class PatientService {
   final PatientRepository _patientRepository;
@@ -25,15 +26,6 @@ class PatientService {
   /// Get patient by ID
   PatientModel? getPatientById(String patientId) {
     return _patientRepository.getById(patientId);
-  }
-
-  /// Search patients by name
-  List<PatientModel> searchPatientsByName(String name) {
-    final patients = _patientRepository.getAll();
-    final lowerName = name.toLowerCase();
-    return patients
-        .where((patient) => patient.name.toLowerCase().contains(lowerName))
-        .toList();
   }
 
   /// Get admitted patients
@@ -52,7 +44,6 @@ class PatientService {
 
   /// Create a new patient
   PatientModel? createPatient({
-    required String patientId,
     required String name,
     required int age,
     required String gender,
@@ -60,8 +51,14 @@ class PatientService {
     required String email,
     required String address,
   }) {
+    // Generate id
+    final String id = const Uuid().v4();
+    // Uniqueness check
+    if (_patientRepository.getById(id) != null) {
+      return null;
+    }
     final patient = PatientModel(
-      id: patientId,
+      id: id,
       name: name,
       age: age,
       gender: gender,

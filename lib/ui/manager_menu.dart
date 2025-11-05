@@ -12,7 +12,8 @@ import 'manager/manage_doctors.dart';
 import 'manager/manage_patients.dart';
 import 'manager/manage_admissions.dart';
 import 'manager/manage_managers.dart';
-import 'package:dart_clinic/service/session_service.dart';
+import 'package:dart_clinic/services/session_service.dart';
+import 'package:dart_clinic/utils/terminal.dart';
 
 class ManagerMenu {
   /// Display the manager menu and handle operations
@@ -23,6 +24,7 @@ class ManagerMenu {
     }
 
     while (true) {
+      TerminalUI.clearScreen();
       print('\n' + '=' * 50);
       print('MANAGER DASHBOARD');
       print(
@@ -42,18 +44,23 @@ class ManagerMenu {
       switch (choice) {
         case 'Manage Rooms':
           ManageRooms().display();
+          TerminalUI.pauseAndClear();
           break;
         case 'Manage Doctors':
           ManageDoctors().display();
+          TerminalUI.pauseAndClear();
           break;
         case 'Manage Patients':
           ManagePatients().display();
+          TerminalUI.pauseAndClear();
           break;
         case 'Manage Admissions':
           ManageAdmissions().display();
+          TerminalUI.pauseAndClear();
           break;
         case 'Manage Managers':
           ManageManagers().display();
+          TerminalUI.pauseAndClear();
           break;
         case 'Logout':
           SessionService().logout();
@@ -66,8 +73,9 @@ class ManagerMenu {
   /// Manager login
   bool _login() {
     while (true) {
+      TerminalUI.clearScreen();
       print('\n' + '=' * 50);
-      print('👔 MANAGER PORTAL LOGIN  👔');
+      print('MANAGER PORTAL LOGIN');
       print('=' * 50);
 
       final email = prompts.get('Enter your email (or type -b to go back)');
@@ -81,10 +89,12 @@ class ManagerMenu {
       SessionService().loginManager(email.trim(), password);
 
       if (SessionService().currentManager != null) {
-        print('\n✅ Login successful! Welcome, ${SessionService().currentManager!.name}');
+        print(
+          '\nLogin successful. Welcome, ${SessionService().currentManager!.name}',
+        );
         return true;
       } else {
-        print('\n❌ Invalid credentials. Please try again.\n');
+        print('\nInvalid credentials. Please try again.\n');
         final retry = prompts.getBool('Do you want to try again? (y/n)');
         if (!retry) {
           return false;

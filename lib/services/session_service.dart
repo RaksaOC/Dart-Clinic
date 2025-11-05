@@ -26,34 +26,55 @@ class SessionService {
   /// Login as doctor using email/password
   /// Returns the authenticated DoctorModel or null if invalid
   DoctorModel? loginDoctor(String email, String password) {
-    final doctors = DoctorService().getAllDoctors();
-    try {
-      final doctor = doctors.firstWhere(
-        (d) => d.email == email && d.password == password,
-      );
-
-      _currentDoctor = doctor;
-      _currentManager = null;
-      return doctor;
-    } catch (_) {
+    final trimmedEmail = email.trim();
+    final trimmedPassword = password.trim();
+    if (trimmedEmail.isEmpty || trimmedPassword.isEmpty) {
       return null;
     }
+
+    final doctors = DoctorService().getAllDoctors();
+    DoctorModel? match;
+    for (final d in doctors) {
+      if (d.email == trimmedEmail && d.password == trimmedPassword) {
+        match = d;
+        break;
+      }
+    }
+
+    if (match != null) {
+      _currentDoctor = match;
+      _currentManager = null;
+    } else {
+      _currentDoctor = null; // ensure no stale session
+    }
+    return match;
   }
 
   /// Login as manager using email/password
   /// Returns the authenticated ManagerModel or null if invalid
   ManagerModel? loginManager(String email, String password) {
-    try {
-      final manager = ManagerService().getAllManagers().firstWhere(
-        (m) => m.email == email && m.password == password,
-      );
-
-      _currentManager = manager;
-      _currentDoctor = null;
-      return manager;
-    } catch (_) {
+    final trimmedEmail = email.trim();
+    final trimmedPassword = password.trim();
+    if (trimmedEmail.isEmpty || trimmedPassword.isEmpty) {
       return null;
     }
+
+    final managers = ManagerService().getAllManagers();
+    ManagerModel? match;
+    for (final m in managers) {
+      if (m.email == trimmedEmail && m.password == trimmedPassword) {
+        match = m;
+        break;
+      }
+    }
+
+    if (match != null) {
+      _currentManager = match;
+      _currentDoctor = null;
+    } else {
+      _currentManager = null; // ensure no stale session
+    }
+    return match;
   }
 
   /// Clear current session (logout)
