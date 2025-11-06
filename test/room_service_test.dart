@@ -14,7 +14,9 @@ void registerRoomServiceTests() {
     test('fetches room details by id', () {
       final service = RoomService();
 
-      final room = service.getRoomById('8b326d82-f779-4630-aa3c-c84b40e664cf'); // R002
+      final room = service.getRoomById(
+        '8b326d82-f779-4630-aa3c-c84b40e664cf',
+      ); // R002
 
       expect(room, isNotNull);
       expect(room!.roomNumber, equals('102'));

@@ -33,7 +33,9 @@ void registerPatientServiceTests() {
     test('fetch patient by id', () {
       final service = PatientService();
 
-      final patient = service.getPatientById('c378f0b6-45c9-4b6a-9e96-35262de8895d'); // P001
+      final patient = service.getPatientById(
+        'c378f0b6-45c9-4b6a-9e96-35262de8895d',
+      ); // P001
 
       expect(patient, isNotNull);
       expect(patient!.name, equals('Sok Chan'));

@@ -13,7 +13,10 @@ void registerSessionServiceTests() {
 
       expect(doctor, isNotNull);
       // D001 (Dara Sovann) -> a054226d-cad4-427e-b571-a8cc60cf5397
-      expect(session.currentDoctor?.id, equals('a054226d-cad4-427e-b571-a8cc60cf5397'));
+      expect(
+        session.currentDoctor?.id,
+        equals('a054226d-cad4-427e-b571-a8cc60cf5397'),
+      );
       expect(session.currentManager, isNull);
     });
 
@@ -46,7 +49,10 @@ void registerSessionServiceTests() {
       expect(manager, isNotNull);
       expect(session.currentDoctor, isNull);
       // M001 (Sok Vannak) -> 38605af8-aa47-4aae-8548-b86e80150793
-      expect(session.currentManager?.id, equals('38605af8-aa47-4aae-8548-b86e80150793'));
+      expect(
+        session.currentManager?.id,
+        equals('38605af8-aa47-4aae-8548-b86e80150793'),
+      );
     });
 
     test('loginManager authenticates valid credentials', () {
@@ -58,7 +64,10 @@ void registerSessionServiceTests() {
 
       expect(manager, isNotNull);
       // M001 (Sok Vannak) -> 38605af8-aa47-4aae-8548-b86e80150793
-      expect(session.currentManager?.id, equals('38605af8-aa47-4aae-8548-b86e80150793'));
+      expect(
+        session.currentManager?.id,
+        equals('38605af8-aa47-4aae-8548-b86e80150793'),
+      );
     });
   });
 }
