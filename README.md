@@ -47,31 +47,10 @@ When the app starts you will be prompted to choose a portal. Use the sample cred
 
 The project reads and writes JSON documents in `lib/db/`. Sample data covers managers, doctors, patients, rooms, appointments, prescriptions, and admissions. Services write back via repositories, so changes made at runtime persist to disk. Passwords are hashed in the JSON files; use the plaintext values below to log in.
 
-| Role    | Name          | Email                   | Password   |
-| ------- | ------------- | ----------------------- | ---------- |
-| Manager | Sok Vannak    | vannak.sok@clinic.kh    | manager123 |
-| Manager | Sreyleak Chum | sreyleak.chum@clinic.kh | secret456  |
-| Doctor  | Dara Sovann   | qw                      | qw         |
-| Doctor  | Chenda Phan   | chenda.phan@clinic.kh   | heart456   |
-| Doctor  | Piseth Nguon  | piseth.nguon@clinic.kh  | kids789    |
-
-> Note: Although `sqlite3` is listed as a dependency, the current implementation persists to JSON files. Migrating to SQLite is a future enhancement.
-
-### Development Commands
-
-- Lint: `dart analyze`
-- Tests: `dart test`
-
-### Extending the System
-
-- Add services/controllers inside `lib/services` and `lib/domain/controllers` to encapsulate rules before exposing in the UI layer.
-- Repositories inherit from `RepositoryBase<T>`; override `toJson`/`fromJson` for new entities.
-- For CLI flows, reuse `TerminalUI` (clear/pause) and `formatCardOptions` for consistent option rendering.
-
-### Known Gaps / TODOs
-
-- `PatientService.getAdmittedPatients` currently returns an empty collection; admissions drive occupancy but not patient lists.
-- Consider a future migration from JSON files to SQLite for concurrency and indexing.
+| Role    | Name        | Email                | Password |
+| ------- | ----------- | -------------------- | -------- |
+| Manager | Sok Vannak  | sokvannak@gmail.com  | 123      |
+| Doctor  | Dara Sovann | darasovann@gmail.com | 123      |
 
 ### AI Usage (disclosure)
 

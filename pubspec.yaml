@@ -6,14 +6,8 @@ environment:
   sdk: ^3.9.2
 
 dependencies:
-  # ✅ Core dependencies
-  sqlite3: ^2.3.0           # For SQLite database support
   path: ^1.9.0              # File and path handling utilities
-  ansicolor: ^2.0.1         # Add colors to terminal output
   prompts: ^2.0.0           # For user input (interactive CLI)
-  logging: ^1.2.0           # Optional structured logging
-  intl: ^0.19.0             # For date/time formatting
-  json_annotation: ^4.9.0   # For model serialization (optional but useful)
   uuid: ^4.4.0              # For unique ID generation
   crypto: ^3.0.5           # For password hashing
 
