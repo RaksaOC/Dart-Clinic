@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 import 'package:dart_clinic/domain/models/patient.dart';
-import 'package:dart_clinic/services/patient_service.dart';
+import 'package:dart_clinic/domain/services/patient_service.dart';
 
 void registerPatientServiceTests() {
   group('PatientService', () {

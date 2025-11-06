@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 import 'package:dart_clinic/domain/models/status.dart';
-import 'package:dart_clinic/services/admission_service.dart';
+import 'package:dart_clinic/domain/services/admission_service.dart';
 
 void registerAdmissionServiceTests() {
   group('AdmissionService', () {

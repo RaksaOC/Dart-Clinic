@@ -1,8 +1,8 @@
 /// Appointments Controller (Doctor)
 library;
 
-import '../../../services/appointment_service.dart';
-import '../../../services/patient_service.dart';
+import '../../services/appointment_service.dart';
+import '../../services/patient_service.dart';
 import '../../../domain/models/appointment.dart';
 import '../../../domain/models/status.dart';
 import '../../../domain/models/patient.dart';

@@ -7,8 +7,8 @@
 /// Coordinates between the UI layer and manager repository.
 library;
 
-import '../domain/models/manager.dart';
-import '../data/manager_repo.dart';
+import '../models/manager.dart';
+import '../../data/manager_repo.dart';
 import 'package:uuid/uuid.dart';
 
 class ManagerService {

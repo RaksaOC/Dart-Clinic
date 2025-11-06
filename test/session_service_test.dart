@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:dart_clinic/services/session_service.dart';
+import 'package:dart_clinic/domain/services/session_service.dart';
 
 void registerSessionServiceTests() {
   setUp(() {

@@ -8,7 +8,7 @@
 library;
 
 import 'package:prompts/prompts.dart' as prompts;
-import 'package:dart_clinic/services/session_service.dart';
+import 'package:dart_clinic/domain/services/session_service.dart';
 import 'doctor/manage_appointments.dart';
 import 'doctor/manage_prescriptions.dart';
 import 'doctor/manage_patients.dart';

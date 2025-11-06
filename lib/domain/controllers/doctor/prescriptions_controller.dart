@@ -1,8 +1,8 @@
 /// Prescriptions Controller (Doctor)
 library;
 
-import '../../../services/prescription_service.dart';
-import '../../../services/patient_service.dart';
+import '../../services/prescription_service.dart';
+import '../../services/patient_service.dart';
 import '../../../domain/models/prescription.dart';
 
 class PrescriptionsController {

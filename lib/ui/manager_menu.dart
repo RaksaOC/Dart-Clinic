@@ -12,7 +12,7 @@ import 'manager/manage_doctors.dart';
 import 'manager/manage_patients.dart';
 import 'manager/manage_admissions.dart';
 import 'manager/manage_managers.dart';
-import 'package:dart_clinic/services/session_service.dart';
+import 'package:dart_clinic/domain/services/session_service.dart';
 import 'package:dart_clinic/utils/terminal.dart';
 
 class ManagerMenu {

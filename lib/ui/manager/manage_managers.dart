@@ -6,7 +6,7 @@ library;
 import 'package:prompts/prompts.dart' as prompts;
 import '../../domain/models/manager.dart';
 import '../../domain/controllers/manager/managers_controller.dart';
-import 'package:dart_clinic/services/session_service.dart';
+import 'package:dart_clinic/domain/services/session_service.dart';
 import 'package:dart_clinic/utils/formatter.dart';
 import 'package:dart_clinic/utils/terminal.dart';
 

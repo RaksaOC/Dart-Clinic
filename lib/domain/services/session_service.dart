@@ -3,8 +3,8 @@
 /// Manages application session state and authentication for doctors and managers.
 library;
 
-import '../domain/models/doctor.dart';
-import '../domain/models/manager.dart';
+import '../models/doctor.dart';
+import '../models/manager.dart';
 import 'doctor_service.dart';
 import 'manager_service.dart';
 

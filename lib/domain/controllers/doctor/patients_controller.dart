@@ -1,9 +1,9 @@
 /// Patients Controller (Doctor)
 library;
 
-import '../../../services/patient_service.dart';
-import '../../../services/appointment_service.dart';
-import '../../../services/prescription_service.dart';
+import '../../services/patient_service.dart';
+import '../../services/appointment_service.dart';
+import '../../services/prescription_service.dart';
 import '../../../domain/models/patient.dart';
 import '../../../domain/models/appointment.dart';
 import '../../../domain/models/prescription.dart';

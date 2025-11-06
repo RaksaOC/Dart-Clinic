@@ -1,7 +1,7 @@
 /// Managers Controller (Manager)
 library;
 
-import '../../../services/manager_service.dart';
+import '../../services/manager_service.dart';
 import '../../../domain/models/manager.dart';
 
 class ManagersController {

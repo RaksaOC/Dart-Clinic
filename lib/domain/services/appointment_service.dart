@@ -10,10 +10,10 @@
 library;
 
 import 'package:dart_clinic/domain/models/status.dart';
-import 'package:dart_clinic/services/session_service.dart';
+import 'package:dart_clinic/domain/services/session_service.dart';
 
-import '../domain/models/appointment.dart';
-import '../data/appointment_repo.dart';
+import '../models/appointment.dart';
+import '../../data/appointment_repo.dart';
 import 'package:uuid/uuid.dart';
 
 class AppointmentService {

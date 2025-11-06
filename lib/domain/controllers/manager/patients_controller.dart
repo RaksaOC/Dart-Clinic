@@ -1,8 +1,8 @@
 /// Patients Controller (Manager)
 library;
 
-import '../../../services/patient_service.dart';
-import '../../../services/admission_service.dart';
+import '../../services/patient_service.dart';
+import '../../services/admission_service.dart';
 import '../../../domain/models/patient.dart';
 
 class PatientsController {

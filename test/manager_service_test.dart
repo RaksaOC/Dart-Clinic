@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 import 'package:dart_clinic/domain/models/manager.dart';
-import 'package:dart_clinic/services/manager_service.dart';
+import 'package:dart_clinic/domain/services/manager_service.dart';
 
 void registerManagerServiceTests() {
   group('ManagerService', () {

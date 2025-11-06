@@ -8,8 +8,8 @@
 /// Coordinates between the UI layer and patient repository.
 library;
 
-import '../domain/models/patient.dart';
-import '../data/patient_repo.dart';
+import '../models/patient.dart';
+import '../../data/patient_repo.dart';
 import 'package:uuid/uuid.dart';
 
 class PatientService {

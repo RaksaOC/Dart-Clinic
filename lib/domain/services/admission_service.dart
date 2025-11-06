@@ -11,9 +11,9 @@ library;
 import 'package:dart_clinic/domain/models/room.dart';
 import 'package:dart_clinic/domain/models/status.dart';
 
-import '../domain/models/admission.dart';
-import '../data/admission_repo.dart';
-import '../data/room_repo.dart';
+import '../models/admission.dart';
+import '../../data/admission_repo.dart';
+import '../../data/room_repo.dart';
 import 'package:uuid/uuid.dart';
 
 class AdmissionService {

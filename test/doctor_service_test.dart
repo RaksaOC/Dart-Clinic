@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 import 'package:dart_clinic/domain/models/doctor.dart';
-import 'package:dart_clinic/services/doctor_service.dart';
+import 'package:dart_clinic/domain/services/doctor_service.dart';
 
 void registerDoctorServiceTests() {
   group('DoctorService', () {

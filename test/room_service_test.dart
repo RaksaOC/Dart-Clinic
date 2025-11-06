@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:dart_clinic/services/room_service.dart';
+import 'package:dart_clinic/domain/services/room_service.dart';
 
 void registerRoomServiceTests() {
   group('RoomService', () {
