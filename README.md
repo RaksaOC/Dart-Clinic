@@ -80,5 +80,6 @@ The project reads and writes JSON documents in `lib/db/`. Sample data covers man
 - Service layer: limited usage (≈15%) for algorithm hints and Dart syntax lookups; core domain logic designed and implemented by us.
 - Models: designed manually.
 - UI layer: significant assistance for prompt flows and formatting; we designed control-flow (loops, switches) and file organization.
+- Repo layer: assited in generating boilerplate code, keys ref from the models, and file io operations. abstract, inheritence, generic type design was made by us.
 - Utils: formatter boilerplate (card design) assisted; we designed the breakdown and integration. Terminal utility based on public ANSI examples.
 - Tests: assisted in generating mock data scaffolding; test cases and assertions were designed by us.
