@@ -96,7 +96,7 @@ class ManageDoctors {
         print('\nFailed to create doctor. Doctor ID might already exist.');
       }
     } catch (e) {
-      print('\n❌ Error: ${e.toString()}');
+      print('\nError: ${e.toString()}');
     }
   }
 

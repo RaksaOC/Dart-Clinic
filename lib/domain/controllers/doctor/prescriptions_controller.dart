@@ -2,18 +2,14 @@
 library;
 
 import '../../services/prescription_service.dart';
-import '../../services/patient_service.dart';
 import '../../../domain/models/prescription.dart';
 
 class PrescriptionsController {
   final PrescriptionService _prescriptionService;
-  final PatientService _patientService;
 
   PrescriptionsController({
     PrescriptionService? prescriptionService,
-    PatientService? patientService,
-  }) : _prescriptionService = prescriptionService ?? PrescriptionService(),
-       _patientService = patientService ?? PatientService();
+  }) : _prescriptionService = prescriptionService ?? PrescriptionService();
 
   PrescriptionModel? issuePrescription({
     required String patientId,
@@ -24,7 +20,6 @@ class PrescriptionsController {
     required String instructions,
     String? notes,
   }) {
-    if (_patientService.getPatientById(patientId) == null) return null;
     return _prescriptionService.issuePrescription(
       patientId: patientId,
       medicationName: medicationName,

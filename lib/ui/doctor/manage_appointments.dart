@@ -4,7 +4,6 @@
 library;
 
 import 'package:prompts/prompts.dart' as prompts;
-import '../../domain/models/appointment.dart';
 import '../../domain/controllers/doctor/appointments_controller.dart';
 import 'package:dart_clinic/utils/formatter.dart';
 import 'package:dart_clinic/utils/terminal.dart';
@@ -58,7 +57,7 @@ class ManageAppointments {
     print('-' * 50);
 
     try {
-      // Select patient from list
+      // select patient from list
       final patientsController = PatientsController();
       final patients = patientsController.getAllPatients();
       if (patients.isEmpty) {
@@ -75,7 +74,7 @@ class ManageAppointments {
       final dateTime = DateTime.tryParse(dateStr.replaceFirst(' ', 'T'));
 
       if (dateTime == null) {
-        print('\n❌ Invalid date format.');
+        print('\n Invalid date format.');
         return;
       }
 
@@ -94,7 +93,7 @@ class ManageAppointments {
         print('\nFailed to create appointment. Ensure patient exists.');
       }
     } catch (e) {
-      print('\n❌ Error: ${e.toString()}');
+      print('\nError: ${e.toString()}');
     }
   }
 
@@ -122,11 +121,8 @@ class ManageAppointments {
           TerminalUI.pauseAndClear();
           break;
         case "Today's Appointments":
-          final now = DateTime.now();
-          final startOfDay = DateTime(now.year, now.month, now.day);
-          final endOfDay = startOfDay.add(const Duration(days: 1));
           final lines = formatCardOptions(
-            _controller.getMyUpcomingAppointments(startOfDay, endOfDay),
+            _controller.getMyUpcomingAppointments(),
           );
           for (final line in lines) {
             print(line);
@@ -134,10 +130,8 @@ class ManageAppointments {
           TerminalUI.pauseAndClear();
           break;
         case 'Upcoming Appointments':
-          final now = DateTime.now();
-          final end = now.add(const Duration(days: 30));
           final lines = formatCardOptions(
-            _controller.getMyUpcomingAppointments(now, end),
+            _controller.getMyUpcomingAppointments(),
           );
           for (final line in lines) {
             print(line);
@@ -145,12 +139,8 @@ class ManageAppointments {
           TerminalUI.pauseAndClear();
           break;
         case 'Past Appointments':
-          final now2 = DateTime.now();
           final lines = formatCardOptions(
-            _controller
-                .getMyAppointments()
-                .where((a) => a.appointmentDateTime.isBefore(now2))
-                .toList(),
+            _controller.getMyPastAppointments(),
           );
           for (final line in lines) {
             print(line);
@@ -222,7 +212,7 @@ class ManageAppointments {
     // Business rule: only cancel if >24h in future
     final now = DateTime.now();
     if (!appt.appointmentDateTime.isAfter(now.add(const Duration(hours: 24)))) {
-      print('\n❌ Can only cancel appointments more than 24 hours in advance.');
+      print('\nCan only cancel appointments more than 24 hours in advance.');
       return;
     }
 

@@ -8,15 +8,20 @@
 /// Coordinates between the UI layer and patient repository.
 library;
 
+import 'package:dart_clinic/domain/services/admission_service.dart';
+
 import '../models/patient.dart';
 import '../../data/patient_repo.dart';
 import 'package:uuid/uuid.dart';
 
 class PatientService {
   final PatientRepository _patientRepository;
-
-  PatientService([PatientRepository? repository])
-    : _patientRepository = repository ?? PatientRepository();
+  final AdmissionService _admissionService;
+  PatientService({
+    PatientRepository? patientRepository,
+    AdmissionService? admissionService,
+  }) : _patientRepository = patientRepository ?? PatientRepository(),
+       _admissionService = admissionService ?? AdmissionService();
 
   /// Get all patients
   List<PatientModel> getAllPatients() {
@@ -26,14 +31,6 @@ class PatientService {
   /// Get patient by ID
   PatientModel? getPatientById(String patientId) {
     return _patientRepository.getById(patientId);
-  }
-
-  /// Get admitted patients
-  /// Note: This requires checking with AdmissionService for admission status
-  /// For now, returns empty list - admission status is managed separately
-  List<PatientModel> getAdmittedPatients() {
-    // TODO: Implement by checking AdmissionService for active admissions
-    return [];
   }
 
   /// Get patients by gender
@@ -76,24 +73,7 @@ class PatientService {
 
   /// Delete a patient
   bool deletePatient(String patientId) {
+    if (_admissionService.getActiveByPatientId(patientId) != null) return false;
     return _patientRepository.delete(patientId);
-  }
-
-  /// Admit a patient
-  /// Note: Admission is now handled by AdmissionService
-  /// This method is deprecated - use AdmissionService.admitPatient instead
-  @Deprecated('Use AdmissionService.admitPatient instead')
-  bool admitPatient(String patientId) {
-    // Admission is now managed by AdmissionService
-    return false;
-  }
-
-  /// Discharge a patient
-  /// Note: Discharge is now handled by AdmissionService
-  /// This method is deprecated - use AdmissionService.dischargePatient instead
-  @Deprecated('Use AdmissionService.dischargePatient instead')
-  bool dischargePatient(String patientId) {
-    // Discharge is now managed by AdmissionService
-    return false;
   }
 }

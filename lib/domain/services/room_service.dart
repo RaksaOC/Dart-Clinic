@@ -18,7 +18,11 @@ class RoomService {
   RoomService([RoomRepository? repository])
     : _roomRepository = repository ?? RoomRepository();
 
-  /// Get all available rooms
+  List<RoomModel> getOccupiedRooms() {
+    final rooms = _roomRepository.getAll();
+    return rooms.where((room) => room.isOccupied).toList();
+  }
+
   List<RoomModel> getAvailableRooms() {
     final rooms = _roomRepository.getAll();
     return rooms.where((room) => !room.isOccupied).toList();
@@ -90,6 +94,8 @@ class RoomService {
 
   /// Delete room by id
   bool deleteRoom(String roomId) {
+    final room = _roomRepository.getById(roomId);
+    if (room == null || room.isOccupied) return false;
     return _roomRepository.delete(roomId);
   }
 }

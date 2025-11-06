@@ -101,7 +101,7 @@ class ManageRooms {
         print('\nFailed to create room. Room ID might already exist.');
       }
     } catch (e) {
-      print('\n❌ Error: ${e.toString()}');
+      print('\nError: ${e.toString()}');
     }
   }
 

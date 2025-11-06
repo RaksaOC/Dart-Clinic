@@ -1,6 +1,8 @@
-// Provides formatting helpers for rendering domain models as single-line
-// "card-like" option strings suitable for CLI selection menus.
+/// Provides formatting helpers for rendering domain models as single-line
+/// "card-like" option strings suitable for CLI selection menus.
 library;
+
+// AI assisted in generating this
 
 import 'package:dart_clinic/domain/models/doctor.dart';
 import 'package:dart_clinic/domain/models/patient.dart';

@@ -1,5 +1,6 @@
 library;
 
+// AI assisted in generating the ansi code
 import 'dart:io';
 
 class TerminalUI {

@@ -8,6 +8,8 @@
 /// Coordinates between the UI layer and admission/room repositories.
 library;
 
+import 'package:dart_clinic/data/patient_repo.dart';
+import 'package:dart_clinic/domain/models/patient.dart';
 import 'package:dart_clinic/domain/models/room.dart';
 import 'package:dart_clinic/domain/models/status.dart';
 
@@ -19,12 +21,15 @@ import 'package:uuid/uuid.dart';
 class AdmissionService {
   final AdmissionRepository _admissionRepository;
   final RoomRepository _roomRepository;
+  final PatientRepository _patientRepository;
 
-  AdmissionService([
+  AdmissionService({
     AdmissionRepository? admissionRepository,
     RoomRepository? roomRepository,
-  ]) : _admissionRepository = admissionRepository ?? AdmissionRepository(),
-       _roomRepository = roomRepository ?? RoomRepository();
+    PatientRepository? patientRepository,
+  }) : _admissionRepository = admissionRepository ?? AdmissionRepository(),
+       _roomRepository = roomRepository ?? RoomRepository(),
+       _patientRepository = patientRepository ?? PatientRepository();
 
   /// Admit a patient to a room
   AdmissionModel? admitPatient({
@@ -32,6 +37,8 @@ class AdmissionService {
     required String roomId,
     String? notes,
   }) {
+    if (_patientRepository.getById(patientId) == null) return null;
+    if (_roomRepository.getById(roomId) == null) return null;
     // Uniqueness check
     final String id = const Uuid().v4();
     if (_admissionRepository.getById(id) != null) {
@@ -133,6 +140,16 @@ class AdmissionService {
   List<AdmissionModel> getActiveAdmissions() {
     final admissions = _admissionRepository.getAll();
     return admissions.where((a) => a.status == AdmissionStatus.active).toList();
+  }
+
+  List<PatientModel> getAdmittedPatients() {
+    final admissions = getActiveAdmissions();
+    final patients = <PatientModel>[];
+    for (final a in admissions) {
+      final p = _patientRepository.getById(a.patientId);
+      if (p != null) patients.add(p);
+    }
+    return patients;
   }
 
   /// Get active admission for a patient

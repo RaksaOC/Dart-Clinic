@@ -75,14 +75,14 @@ class ManageAdmissions {
     // List available rooms
     final availableRooms = _rooms.getAvailableRooms();
     if (availableRooms.isEmpty) {
-      print('\n❌ No available rooms.');
+      print('\nNo available rooms.');
       return;
     }
 
     // List patients
     final patients = _patients.getAllPatients();
     if (patients.isEmpty) {
-      print('\n❌ No patients found.');
+      print('\nNo patients found.');
       return;
     }
 
@@ -95,7 +95,7 @@ class ManageAdmissions {
       // Check if patient is already admitted
       final activeAdmission = _manager.getActiveByPatientId(patient.id);
       if (activeAdmission != null) {
-        print('\n❌ Patient is already admitted to a room.');
+        print('\nPatient is already admitted to a room.');
         return;
       }
 
@@ -127,7 +127,7 @@ class ManageAdmissions {
         print('\nFailed to admit patient.');
       }
     } catch (e) {
-      print('\n❌ Error: ${e.toString()}');
+      print('\nError: ${e.toString()}');
     }
   }
 
