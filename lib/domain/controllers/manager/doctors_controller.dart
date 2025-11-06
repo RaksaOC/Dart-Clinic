@@ -11,7 +11,6 @@ class DoctorsController {
     : _doctorService = doctorService ?? DoctorService();
 
   DoctorModel? createDoctor({
-    required String doctorId,
     required String name,
     required String specialization,
     required String phoneNumber,

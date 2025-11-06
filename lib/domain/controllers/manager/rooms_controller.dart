@@ -11,7 +11,6 @@ class RoomsController {
     : _roomService = roomService ?? RoomService();
 
   RoomModel? createRoom({
-    required String roomId,
     required String roomNumber,
     required String roomType,
     required double dailyRate,

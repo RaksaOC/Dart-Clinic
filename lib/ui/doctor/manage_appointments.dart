@@ -115,32 +115,46 @@ class ManageAppointments {
 
       switch (choice) {
         case 'All Appointments':
-          _displayAppointments(_controller.getMyAppointments());
+          final lines = formatCardOptions(_controller.getMyAppointments());
+          for (final line in lines) {
+            print(line);
+          }
           TerminalUI.pauseAndClear();
           break;
         case "Today's Appointments":
           final now = DateTime.now();
           final startOfDay = DateTime(now.year, now.month, now.day);
           final endOfDay = startOfDay.add(const Duration(days: 1));
-          _displayAppointments(
+          final lines = formatCardOptions(
             _controller.getMyUpcomingAppointments(startOfDay, endOfDay),
           );
+          for (final line in lines) {
+            print(line);
+          }
           TerminalUI.pauseAndClear();
           break;
         case 'Upcoming Appointments':
           final now = DateTime.now();
           final end = now.add(const Duration(days: 30));
-          _displayAppointments(_controller.getMyUpcomingAppointments(now, end));
+          final lines = formatCardOptions(
+            _controller.getMyUpcomingAppointments(now, end),
+          );
+          for (final line in lines) {
+            print(line);
+          }
           TerminalUI.pauseAndClear();
           break;
         case 'Past Appointments':
           final now2 = DateTime.now();
-          _displayAppointments(
+          final lines = formatCardOptions(
             _controller
                 .getMyAppointments()
                 .where((a) => a.appointmentDateTime.isBefore(now2))
                 .toList(),
           );
+          for (final line in lines) {
+            print(line);
+          }
           TerminalUI.pauseAndClear();
           break;
         case 'Back':
@@ -163,7 +177,10 @@ class ManageAppointments {
     final idx = options.indexOf(chosen!);
     final appointment = list[idx];
 
-    _displayAppointments([appointment]);
+    final lines = formatCardOptions([appointment]);
+    for (final line in lines) {
+      print(line);
+    }
 
     final action = prompts.choose('Actions:', ['Complete Appointment', 'Back']);
 
@@ -217,22 +234,6 @@ class ManageAppointments {
       print('\nAppointment cancelled.');
     } else {
       print('\nFailed to cancel appointment.');
-    }
-  }
-
-  void _displayAppointments(List<AppointmentModel> appts) {
-    if (appts.isEmpty) {
-      print('\nNo appointments.');
-      return;
-    }
-    print(
-      '\n${'ID'.padRight(10)} ${'Patient'.padRight(10)} ${'When'.padRight(20)} ${'Status'.padRight(12)}',
-    );
-    print('-' * 70);
-    for (final a in appts) {
-      print(
-        '${a.id.padRight(10)} ${a.patientId.padRight(10)} ${a.appointmentDateTime.toString().padRight(20)} ${a.status.name.padRight(12)}',
-      );
     }
   }
 }

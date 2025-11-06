@@ -72,7 +72,6 @@ class ManageRooms {
     print('-' * 50);
 
     try {
-      final roomId = prompts.get('Room ID (e.g., R001):');
       final roomNumber = prompts.get('Room Number:');
       final roomType =
           prompts.choose('Room Type:', [
@@ -86,7 +85,6 @@ class ManageRooms {
       final notes = prompts.get('Notes (optional, press Enter to skip):');
 
       final room = _manager.createRoom(
-        roomId: roomId.trim(),
         roomNumber: roomNumber.trim(),
         roomType: roomType,
         dailyRate: dailyRate,

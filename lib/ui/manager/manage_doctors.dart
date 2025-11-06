@@ -67,7 +67,6 @@ class ManageDoctors {
     print('-' * 50);
 
     try {
-      final doctorId = prompts.get('Doctor ID (e.g., D001):');
       final name = prompts.get('Name:');
       final specialization = prompts.get('Specialization:');
       final phoneNumber = prompts.get('Phone Number:');
@@ -78,7 +77,6 @@ class ManageDoctors {
       final password = prompts.get('Password:');
 
       final doctor = _manager.createDoctor(
-        doctorId: doctorId.trim(),
         name: name.trim(),
         specialization: specialization.trim(),
         phoneNumber: phoneNumber.trim(),
