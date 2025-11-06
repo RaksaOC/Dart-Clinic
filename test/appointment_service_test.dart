@@ -13,7 +13,7 @@ void registerAppointmentServiceTests() {
       final appointmentService = AppointmentService();
 
       final created = appointmentService.createAppointment(
-        patientId: 'P002',
+        patientId: 'ccd17498-7315-4e7d-a185-90fb7dcca2d0', // P002
         appointmentDateTime: DateTime.now().add(const Duration(days: 1)),
         notes: 'Should not be created',
       );
@@ -27,7 +27,7 @@ void registerAppointmentServiceTests() {
 
       final futureSlot = DateTime.now().add(const Duration(days: 2));
       final created = appointmentService.createAppointment(
-        patientId: 'P002',
+        patientId: 'ccd17498-7315-4e7d-a185-90fb7dcca2d0', // P002
         appointmentDateTime: futureSlot,
         notes: 'Routine check-up',
       );
@@ -37,7 +37,7 @@ void registerAppointmentServiceTests() {
       final stored = appointmentService.getById(created!.id);
       expect(stored, isNotNull);
       expect(stored!.status, AppointmentStatus.scheduled);
-      expect(stored.patientId, equals('P002'));
+      expect(stored.patientId, equals('ccd17498-7315-4e7d-a185-90fb7dcca2d0')); // P002
     });
 
     test('rejects double-booking the same timeslot for the doctor', () {
@@ -46,7 +46,7 @@ void registerAppointmentServiceTests() {
 
       final conflictingSlot = DateTime.parse('2025-11-06T09:00:00.000Z');
       final created = appointmentService.createAppointment(
-        patientId: 'P003',
+        patientId: '67514370-83ed-4960-862a-11992d4dda4d', // P003
         appointmentDateTime: conflictingSlot,
         notes: 'Should fail',
       );
@@ -59,10 +59,10 @@ void registerAppointmentServiceTests() {
       final appointmentService = AppointmentService();
 
       final patientAppointments = appointmentService.getPatientAppointments(
-        'P001',
+        'c378f0b6-45c9-4b6a-9e96-35262de8895d', // P001
       );
 
-      expect(patientAppointments.map((a) => a.id), contains('AP001'));
+      expect(patientAppointments.map((a) => a.id), contains('24569893-0db8-45a0-a740-53a9a370b557')); // AP001
     });
 
     test('returns only logged-in doctor appointments', () {
@@ -72,7 +72,8 @@ void registerAppointmentServiceTests() {
       final myAppointments = appointmentService.getMyAppointments();
 
       expect(myAppointments, isNotEmpty);
-      expect(myAppointments.every((a) => a.doctorId == 'D001'), isTrue);
+      // D001 -> a054226d-cad4-427e-b571-a8cc60cf5397
+      expect(myAppointments.every((a) => a.doctorId == 'a054226d-cad4-427e-b571-a8cc60cf5397'), isTrue);
     });
   });
 }

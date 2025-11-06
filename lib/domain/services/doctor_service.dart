@@ -11,6 +11,7 @@ library;
 import '../models/doctor.dart';
 import '../../data/doctor_repo.dart';
 import 'package:uuid/uuid.dart';
+import 'package:dart_clinic/utils/password_hasher.dart';
 
 class DoctorService {
   final DoctorRepository _doctorRepository;
@@ -70,7 +71,7 @@ class DoctorService {
       address: address,
       age: age,
       gender: gender,
-      password: password,
+      password: PasswordHasher.hashPassword(password),
     );
     return _doctorRepository.create(doctor);
   }

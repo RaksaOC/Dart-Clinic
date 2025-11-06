@@ -28,7 +28,8 @@ void registerDoctorServiceTests() {
 
       final cardiologists = service.getDoctorsBySpecialization('Cardiology');
 
-      expect(cardiologists.map((d) => d.id), contains('D002'));
+      // D002 (Chenda Phan - Cardiology) -> f8268dc8-34bf-4d12-b6ed-276ac69c1786
+      expect(cardiologists.map((d) => d.id), contains('f8268dc8-34bf-4d12-b6ed-276ac69c1786'));
     });
 
     test('search doctors by name', () {
@@ -36,7 +37,8 @@ void registerDoctorServiceTests() {
 
       final results = service.searchDoctorsByName('Sovann');
 
-      expect(results.map((d) => d.id), contains('D001'));
+      // D001 (Dara Sovann) -> a054226d-cad4-427e-b571-a8cc60cf5397
+      expect(results.map((d) => d.id), contains('a054226d-cad4-427e-b571-a8cc60cf5397'));
     });
 
     test('updates existing doctor details', () {
@@ -64,7 +66,7 @@ void registerDoctorServiceTests() {
         address: 'Phnom Penh',
         age: 40,
         gender: 'Male',
-        password: 'temp123',
+        password: created.password, // Keep existing hashed password
       );
 
       final updated = service.updateDoctor(updatedDoctor);

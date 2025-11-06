@@ -10,6 +10,7 @@ library;
 import '../models/manager.dart';
 import '../../data/manager_repo.dart';
 import 'package:uuid/uuid.dart';
+import 'package:dart_clinic/utils/password_hasher.dart';
 
 class ManagerService {
   final ManagerRepository _managerRepository;
@@ -36,7 +37,7 @@ class ManagerService {
       id: id,
       name: name,
       email: email,
-      password: password,
+      password: PasswordHasher.hashPassword(password),
       age: age,
       gender: gender,
       phoneNumber: phoneNumber,

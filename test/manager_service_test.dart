@@ -28,7 +28,8 @@ void registerManagerServiceTests() {
       final manager = service.findManagerByEmail('vannak.sok@clinic.kh');
 
       expect(manager, isNotNull);
-      expect(manager!.id, equals('M001'));
+      // M001 (Sok Vannak) -> 38605af8-aa47-4aae-8548-b86e80150793
+      expect(manager!.id, equals('38605af8-aa47-4aae-8548-b86e80150793'));
     });
 
     test('get all managers returns seed data', () {
@@ -36,7 +37,8 @@ void registerManagerServiceTests() {
 
       final managers = service.getAllManagers();
 
-      expect(managers.map((m) => m.id), containsAll(<String>['M001', 'M002']));
+      // M001 -> 38605af8-aa47-4aae-8548-b86e80150793, M002 -> 87d71eb7-332e-4fb0-bd86-a912bfc30ed7
+      expect(managers.map((m) => m.id), containsAll(<String>['38605af8-aa47-4aae-8548-b86e80150793', '87d71eb7-332e-4fb0-bd86-a912bfc30ed7']));
     });
 
     test('updates existing manager', () {
@@ -58,7 +60,7 @@ void registerManagerServiceTests() {
         id: created!.id,
         name: 'Temp Manager Updated',
         email: 'temp.manager@clinic.kh',
-        password: 'pass123',
+        password: created.password, // Keep existing hashed password
         age: 30,
         gender: 'Female',
         phoneNumber: '+855-12-345-000',

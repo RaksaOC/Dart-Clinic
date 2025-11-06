@@ -7,6 +7,7 @@ import '../models/doctor.dart';
 import '../models/manager.dart';
 import 'doctor_service.dart';
 import 'manager_service.dart';
+import 'package:dart_clinic/utils/password_hasher.dart';
 
 class SessionService {
   // Singleton boilerplate
@@ -35,7 +36,8 @@ class SessionService {
     final doctors = DoctorService().getAllDoctors();
     DoctorModel? match;
     for (final d in doctors) {
-      if (d.email == trimmedEmail && d.password == trimmedPassword) {
+      if (d.email == trimmedEmail &&
+          PasswordHasher.verifyPassword(trimmedPassword, d.password)) {
         match = d;
         break;
       }
@@ -62,7 +64,8 @@ class SessionService {
     final managers = ManagerService().getAllManagers();
     ManagerModel? match;
     for (final m in managers) {
-      if (m.email == trimmedEmail && m.password == trimmedPassword) {
+      if (m.email == trimmedEmail &&
+          PasswordHasher.verifyPassword(trimmedPassword, m.password)) {
         match = m;
         break;
       }
