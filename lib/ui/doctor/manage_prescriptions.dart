@@ -76,7 +76,7 @@ class ManagePrescriptions {
 
       final durationDays = int.tryParse(durationStr);
       if (durationDays == null || durationDays <= 0) {
-        print('\n❌ Invalid duration.');
+        print('\nInvalid duration.');
         return;
       }
 
@@ -99,7 +99,7 @@ class ManagePrescriptions {
         print('\nFailed to issue prescription. Ensure patient exists.');
       }
     } catch (e) {
-      print('\n❌ Error: ${e.toString()}');
+      print('\nError: ${e.toString()}');
     }
   }
 

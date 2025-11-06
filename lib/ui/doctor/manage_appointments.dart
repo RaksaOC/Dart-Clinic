@@ -4,7 +4,6 @@
 library;
 
 import 'package:prompts/prompts.dart' as prompts;
-import '../../domain/models/appointment.dart';
 import '../../domain/controllers/doctor/appointments_controller.dart';
 import 'package:dart_clinic/utils/formatter.dart';
 import 'package:dart_clinic/utils/terminal.dart';
@@ -58,7 +57,7 @@ class ManageAppointments {
     print('-' * 50);
 
     try {
-      // Select patient from list
+      // select patient from list
       final patientsController = PatientsController();
       final patients = patientsController.getAllPatients();
       if (patients.isEmpty) {
@@ -75,7 +74,7 @@ class ManageAppointments {
       final dateTime = DateTime.tryParse(dateStr.replaceFirst(' ', 'T'));
 
       if (dateTime == null) {
-        print('\n❌ Invalid date format.');
+        print('\n Invalid date format.');
         return;
       }
 
@@ -94,7 +93,7 @@ class ManageAppointments {
         print('\nFailed to create appointment. Ensure patient exists.');
       }
     } catch (e) {
-      print('\n❌ Error: ${e.toString()}');
+      print('\nError: ${e.toString()}');
     }
   }
 
@@ -115,32 +114,37 @@ class ManageAppointments {
 
       switch (choice) {
         case 'All Appointments':
-          _displayAppointments(_controller.getMyAppointments());
+          final lines = formatCardOptions(_controller.getMyAppointments());
+          for (final line in lines) {
+            print(line);
+          }
           TerminalUI.pauseAndClear();
           break;
         case "Today's Appointments":
-          final now = DateTime.now();
-          final startOfDay = DateTime(now.year, now.month, now.day);
-          final endOfDay = startOfDay.add(const Duration(days: 1));
-          _displayAppointments(
-            _controller.getMyUpcomingAppointments(startOfDay, endOfDay),
+          final lines = formatCardOptions(
+            _controller.getMyUpcomingAppointments(),
           );
+          for (final line in lines) {
+            print(line);
+          }
           TerminalUI.pauseAndClear();
           break;
         case 'Upcoming Appointments':
-          final now = DateTime.now();
-          final end = now.add(const Duration(days: 30));
-          _displayAppointments(_controller.getMyUpcomingAppointments(now, end));
+          final lines = formatCardOptions(
+            _controller.getMyUpcomingAppointments(),
+          );
+          for (final line in lines) {
+            print(line);
+          }
           TerminalUI.pauseAndClear();
           break;
         case 'Past Appointments':
-          final now2 = DateTime.now();
-          _displayAppointments(
-            _controller
-                .getMyAppointments()
-                .where((a) => a.appointmentDateTime.isBefore(now2))
-                .toList(),
+          final lines = formatCardOptions(
+            _controller.getMyPastAppointments(),
           );
+          for (final line in lines) {
+            print(line);
+          }
           TerminalUI.pauseAndClear();
           break;
         case 'Back':
@@ -163,7 +167,10 @@ class ManageAppointments {
     final idx = options.indexOf(chosen!);
     final appointment = list[idx];
 
-    _displayAppointments([appointment]);
+    final lines = formatCardOptions([appointment]);
+    for (final line in lines) {
+      print(line);
+    }
 
     final action = prompts.choose('Actions:', ['Complete Appointment', 'Back']);
 
@@ -205,7 +212,7 @@ class ManageAppointments {
     // Business rule: only cancel if >24h in future
     final now = DateTime.now();
     if (!appt.appointmentDateTime.isAfter(now.add(const Duration(hours: 24)))) {
-      print('\n❌ Can only cancel appointments more than 24 hours in advance.');
+      print('\nCan only cancel appointments more than 24 hours in advance.');
       return;
     }
 
@@ -217,22 +224,6 @@ class ManageAppointments {
       print('\nAppointment cancelled.');
     } else {
       print('\nFailed to cancel appointment.');
-    }
-  }
-
-  void _displayAppointments(List<AppointmentModel> appts) {
-    if (appts.isEmpty) {
-      print('\nNo appointments.');
-      return;
-    }
-    print(
-      '\n${'ID'.padRight(10)} ${'Patient'.padRight(10)} ${'When'.padRight(20)} ${'Status'.padRight(12)}',
-    );
-    print('-' * 70);
-    for (final a in appts) {
-      print(
-        '${a.id.padRight(10)} ${a.patientId.padRight(10)} ${a.appointmentDateTime.toString().padRight(20)} ${a.status.name.padRight(12)}',
-      );
     }
   }
 }

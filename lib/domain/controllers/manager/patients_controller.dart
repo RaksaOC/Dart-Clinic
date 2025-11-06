@@ -38,20 +38,10 @@ class PatientsController {
   List<PatientModel> getPatientsByGender(String g) =>
       _patientService.getPatientsByGender(g);
 
-  List<PatientModel> getAdmittedPatients() {
-    final active = _admissionService.getActiveAdmissions();
-    final result = <PatientModel>[];
-    for (final a in active) {
-      final p = _patientService.getPatientById(a.patientId);
-      if (p != null) result.add(p);
-    }
-    return result;
-  }
+  List<PatientModel> getAdmittedPatients() =>
+      _admissionService.getAdmittedPatients();
 
   bool updatePatient(PatientModel p) => _patientService.updatePatient(p);
 
-  bool deletePatient(String id) {
-    if (_admissionService.getActiveByPatientId(id) != null) return false;
-    return _patientService.deletePatient(id);
-  }
+  bool deletePatient(String id) => _patientService.deletePatient(id);
 }

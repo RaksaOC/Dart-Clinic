@@ -1,6 +1,6 @@
-/// Hospital Management System - Main Entry Point
+/// Dart Clinic - Main Entry Point
 ///
-/// This is the entry point for the Hospital Management CLI application.
+/// This is the entry point for the Dart Clinic CLI application.
 /// It initializes the UI and starts the main menu.
 library;
 

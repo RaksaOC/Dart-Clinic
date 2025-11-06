@@ -9,6 +9,7 @@
 /// Coordinates between the UI layer and appointment repository.
 library;
 
+import 'package:dart_clinic/data/patient_repo.dart';
 import 'package:dart_clinic/domain/models/status.dart';
 import 'package:dart_clinic/domain/services/session_service.dart';
 
@@ -18,9 +19,13 @@ import 'package:uuid/uuid.dart';
 
 class AppointmentService {
   final AppointmentRepository _appointmentRepository;
-
-  AppointmentService([AppointmentRepository? repository])
-    : _appointmentRepository = repository ?? AppointmentRepository();
+  final PatientRepository _patientRepository;
+  AppointmentService({
+    AppointmentRepository? appointmentRepository,
+    PatientRepository? patientRepository,
+  }) : _appointmentRepository =
+           appointmentRepository ?? AppointmentRepository(),
+       _patientRepository = patientRepository ?? PatientRepository();
 
   /// Create a new appointment
   AppointmentModel? createAppointment({
@@ -30,12 +35,12 @@ class AppointmentService {
   }) {
     final currentDoctor = SessionService().currentDoctor;
     if (currentDoctor == null) return null;
+    if (_patientRepository.getById(patientId) == null) return null;
     final String id = const Uuid().v4();
-    // Uniqueness check
     if (_appointmentRepository.getById(id) != null) {
       return null;
     }
-    // Overlap check: block same doctor same timeslot (exact timestamp)
+    
     final existsSameSlot = _appointmentRepository.getAll().any(
       (a) =>
           a.doctorId == currentDoctor.id &&
@@ -156,19 +161,23 @@ class AppointmentService {
     }).toList();
   }
 
-  List<AppointmentModel> getMyUpcomingAppointments(
-    DateTime startDate,
-    DateTime endDate,
-  ) {
+  List<AppointmentModel> getMyUpcomingAppointments() {
     final my = getMyAppointments();
-    return my.where((a) {
-      return a.appointmentDateTime.isAfter(
-            startDate.subtract(const Duration(seconds: 1)),
-          ) &&
-          a.appointmentDateTime.isBefore(
-            endDate.add(const Duration(seconds: 1)),
-          );
-    }).toList();
+    final startDate = DateTime.now();
+    final endDate = startDate.add(const Duration(days: 30));
+    return my
+        .where(
+          (a) =>
+              a.appointmentDateTime.isAfter(startDate) &&
+              a.appointmentDateTime.isBefore(endDate),
+        )
+        .toList();
+  }
+
+  List<AppointmentModel> getMyPastAppointments() {
+    final my = getMyAppointments();
+    final now = DateTime.now();
+    return my.where((a) => a.appointmentDateTime.isBefore(now)).toList();
   }
 
   /// Get appointments by status

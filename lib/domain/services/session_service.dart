@@ -9,6 +9,8 @@ import 'doctor_service.dart';
 import 'manager_service.dart';
 import 'package:dart_clinic/utils/password_hasher.dart';
 
+// AI assited in designing this single ton boiler plate code
+
 class SessionService {
   // Singleton boilerplate
   static final SessionService _instance = SessionService._internal();
