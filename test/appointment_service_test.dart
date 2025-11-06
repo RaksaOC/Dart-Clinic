@@ -2,6 +2,8 @@ import 'package:test/test.dart';
 import 'package:dart_clinic/domain/models/status.dart';
 import 'package:dart_clinic/domain/services/appointment_service.dart';
 import 'package:dart_clinic/domain/services/session_service.dart';
+import 'dart:io';
+import 'package:path/path.dart' as p;
 
 void registerAppointmentServiceTests() {
   setUp(() {
@@ -27,7 +29,7 @@ void registerAppointmentServiceTests() {
 
       final futureSlot = DateTime.now().add(const Duration(days: 2));
       final created = appointmentService.createAppointment(
-        patientId: 'ccd17498-7315-4e7d-a185-90fb7dcca2d0', // P002
+        patientId: 'ccd17498-7315-4e7d-a185-90fb7dcca2d0',
         appointmentDateTime: futureSlot,
         notes: 'Routine check-up',
       );
@@ -37,10 +39,7 @@ void registerAppointmentServiceTests() {
       final stored = appointmentService.getById(created!.id);
       expect(stored, isNotNull);
       expect(stored!.status, AppointmentStatus.scheduled);
-      expect(
-        stored.patientId,
-        equals('ccd17498-7315-4e7d-a185-90fb7dcca2d0'),
-      ); // P002
+      expect(stored.patientId, equals('ccd17498-7315-4e7d-a185-90fb7dcca2d0'));
     });
 
     test('rejects double-booking the same timeslot for the doctor', () {
@@ -49,7 +48,7 @@ void registerAppointmentServiceTests() {
 
       final conflictingSlot = DateTime.parse('2025-11-06T09:00:00.000Z');
       final created = appointmentService.createAppointment(
-        patientId: '67514370-83ed-4960-862a-11992d4dda4d', // P003
+        patientId: '67514370-83ed-4960-862a-11992d4dda4d',
         appointmentDateTime: conflictingSlot,
         notes: 'Should fail',
       );
@@ -62,7 +61,7 @@ void registerAppointmentServiceTests() {
       final appointmentService = AppointmentService();
 
       final patientAppointments = appointmentService.getPatientAppointments(
-        'c378f0b6-45c9-4b6a-9e96-35262de8895d', // P001
+        'c378f0b6-45c9-4b6a-9e96-35262de8895d',
       );
 
       expect(
@@ -91,6 +90,18 @@ void registerAppointmentServiceTests() {
 
 // Allow running this file independently
 void main() {
+  final originalDir = Directory.current;
+
+  setUpAll(() {
+    final libDir = Directory(p.join(originalDir.path, 'lib'));
+    if (libDir.existsSync()) {
+      Directory.current = libDir.path;
+    }
+  });
+
+  tearDownAll(() {
+    Directory.current = originalDir.path;
+  });
   setUp(() {
     SessionService().logout();
   });
