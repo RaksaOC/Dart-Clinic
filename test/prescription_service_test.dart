@@ -154,6 +154,15 @@ void main() {
   tearDownAll(() {
     Directory.current = originalDir.path;
   });
+  setUpAll(() {
+    final libDir = Directory(p.join(originalDir.path, 'lib'));
+    if (libDir.existsSync()) {
+      Directory.current = libDir.path;
+    }
+  });
+  tearDownAll(() {
+    Directory.current = originalDir.path;
+  });
   setUp(() {
     SessionService().logout();
   });
