@@ -72,7 +72,7 @@ void registerPrescriptionServiceTests() {
 
       var myPrescriptions = prescriptionService.getMyPrescriptions();
       if (myPrescriptions.isEmpty) {
-        final issued = prescriptionService.issuePrescription(
+        prescriptionService.issuePrescription(
           patientId: '67514370-83ed-4960-862a-11992d4dda4d',
           medicationName: 'TestMed',
           dosage: '1u',

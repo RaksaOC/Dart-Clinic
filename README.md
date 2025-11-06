@@ -1,33 +1,33 @@
 ## Dart Clinic – Hospital Management CLI
 
-Command-line hospital management system built with Dart. The app provides two role-based portals (Doctor and Manager) that sit on top of a layered architecture (UI → Controllers → Services → Repositories → JSON data files). Doctors can manage their appointments, patients, and prescriptions, while managers coordinate rooms, admissions, and staffing.
+Command-line hospital management system built with Dart. The app provides two role-based portals (Doctor and Manager) implemented over a layered architecture (UI → Controllers → Services → Repositories → JSON data files). Doctors manage appointments, patients, and prescriptions; managers coordinate rooms, admissions, and staffing.
 
 ### Highlights
 
--   **Doctor portal**: schedule, view, complete, and cancel appointments; review patients; issue prescriptions tied to completed visits.
--   **Manager portal**: administer rooms, admissions, doctors, managers, and patients; enforces one active admission per patient and room occupancy rules.
--   **Session-aware services**: singleton `SessionService` drives authentication and keeps portals scoped to the logged-in user.
--   **JSON-backed persistence**: repository layer serializes data into `lib/db/*.json`; UUIDs are used for new records while legacy seed data ships with human-readable IDs.
--   **Structured CLI experience**: interactive prompts powered by `prompts`, ANSI terminal helpers, and formatter utilities to render card-style menu options.
+- Doctor portal: schedule, view, complete, and cancel appointments; review patients; issue prescriptions.
+- Manager portal: manage rooms, admissions, doctors, managers, and patients; one active admission per patient; room occupancy enforced.
+- Authentication: `SessionService` singleton; passwords stored as SHA‑256 hashes in JSON.
+- Persistence: repositories read/write `lib/db/*.json`; all records use UUIDs (seed credentials below still work).
+- CLI experience: interactive `prompts`, ANSI screen helpers, and card-style formatting for options.
 
 ### Project Layout
 
 ```
 bin/                Application entry point (`dart run bin/dart_clinic.dart`)
 lib/
-	ui/              Role-based CLI menus and flows
-	domain/          Models + controllers that wrap services for the UI layer
-	services/        Business logic (appointments, admissions, rooms, etc.)
-	data/            Repository implementations targeting JSON storage
-	utils/           Terminal helpers and display formatters
-	db/              Seed data files consumed by repositories
-test/               Placeholder for automated tests (currently empty)
+  ui/               Role-based CLI menus and flows
+  domain/           Models and controllers for the UI layer
+  services/         Business logic (appointments, admissions, rooms, etc.)
+  data/             Repository implementations for JSON storage
+  utils/            Terminal helpers and display formatters
+  db/               Seed data files consumed by repositories
+test/               Unit tests per service (session, appointment, admission, etc.)
 ```
 
 ### Prerequisites
 
--   Dart SDK `^3.9.2`
--   (Optional) Make sure your shell supports ANSI escape codes for clear-screen calls. Windows Terminal, PowerShell 7+, macOS Terminal, and most Linux terminals are all fine.
+- Dart SDK `^3.9.2`
+- (Optional) Make sure your shell supports ANSI escape codes for clear-screen calls. Windows Terminal, PowerShell 7+, macOS Terminal, and most Linux terminals are all fine.
 
 Install dependencies:
 
@@ -45,7 +45,7 @@ When the app starts you will be prompted to choose a portal. Use the sample cred
 
 ### Seed Credentials & Data
 
-The project reads and writes JSON documents in `lib/db/`. Sample data covers managers, doctors, patients, rooms, appointments, prescriptions, and admissions. Every service writes back through its repository, so changes made at runtime persist to disk.
+The project reads and writes JSON documents in `lib/db/`. Sample data covers managers, doctors, patients, rooms, appointments, prescriptions, and admissions. Services write back via repositories, so changes made at runtime persist to disk. Passwords are hashed in the JSON files; use the plaintext values below to log in.
 
 | Role    | Name          | Email                   | Password   |
 | ------- | ------------- | ----------------------- | ---------- |
@@ -55,21 +55,30 @@ The project reads and writes JSON documents in `lib/db/`. Sample data covers man
 | Doctor  | Chenda Phan   | chenda.phan@clinic.kh   | heart456   |
 | Doctor  | Piseth Nguon  | piseth.nguon@clinic.kh  | kids789    |
 
-> Note: Although `sqlite3` is listed as a dependency, the current implementation persists to JSON files. Migrating to SQLite was planned but not yet completed.
+> Note: Although `sqlite3` is listed as a dependency, the current implementation persists to JSON files. Migrating to SQLite is a future enhancement.
 
 ### Development Commands
 
--   Lint: `dart analyze`
--   Tests: `dart test` (the test suite is currently just a scaffold)
+- Lint: `dart analyze`
+- Tests: `dart test`
 
 ### Extending the System
 
--   Add new services/controllers inside `lib/services` and `lib/domain/controllers` to encapsulate business rules before exposing them in the UI layer.
--   Repositories inherit from `RepositoryBase<T>`; override `toJson`/`fromJson` to plug in new entities.
--   When adding CLI flows, reuse `TerminalUI` for screen handling and `formatCardOptions` for consistent menu rendering.
+- Add services/controllers inside `lib/services` and `lib/domain/controllers` to encapsulate rules before exposing in the UI layer.
+- Repositories inherit from `RepositoryBase<T>`; override `toJson`/`fromJson` for new entities.
+- For CLI flows, reuse `TerminalUI` (clear/pause) and `formatCardOptions` for consistent option rendering.
 
 ### Known Gaps / TODOs
 
--   Admissions service does not yet synchronize admitted patient lists back to `PatientService.getAdmittedPatients` (method returns an empty collection).
--   No automated coverage beyond the empty placeholder test; critical workflows are manual.
--   Credentials are stored in plain text within JSON files; introduce hashing before production use.
+- `PatientService.getAdmittedPatients` currently returns an empty collection; admissions drive occupancy but not patient lists.
+- Consider a future migration from JSON files to SQLite for concurrency and indexing.
+
+### AI Usage (disclosure)
+
+- Seed DB: assisted in generating initial JSON seed content.
+- Controllers: helped scaffold boilerplate and map controller methods to existing service methods; business rules remain in services.
+- Service layer: limited usage (≈15%) for algorithm hints and Dart syntax lookups; core domain logic designed and implemented by us.
+- Models: designed manually.
+- UI layer: significant assistance for prompt flows and formatting; we designed control-flow (loops, switches) and file organization.
+- Utils: formatter boilerplate (card design) assisted; we designed the breakdown and integration. Terminal utility based on public ANSI examples.
+- Tests: assisted in generating mock data scaffolding; test cases and assertions were designed by us.
