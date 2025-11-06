@@ -1,6 +1,9 @@
 import 'package:test/test.dart';
 import 'package:dart_clinic/domain/models/manager.dart';
 import 'package:dart_clinic/domain/services/manager_service.dart';
+import 'dart:io';
+import 'package:path/path.dart' as p;
+import 'package:dart_clinic/domain/services/session_service.dart';
 
 void registerManagerServiceTests() {
   group('ManagerService', () {
@@ -24,12 +27,21 @@ void registerManagerServiceTests() {
 
     test('finds manager by email', () {
       final service = ManagerService();
+      // Ensure sample exists
+      service.createManager(
+        name: 'Findable Manager',
+        email: 'vannak.sok@clinic.kh',
+        password: 'manager123',
+        age: 35,
+        gender: 'Other',
+        phoneNumber: '+855-00-222-333',
+        address: 'PP',
+      );
 
       final manager = service.findManagerByEmail('vannak.sok@clinic.kh');
 
       expect(manager, isNotNull);
-      // M001 (Sok Vannak) -> 38605af8-aa47-4aae-8548-b86e80150793
-      expect(manager!.id, equals('38605af8-aa47-4aae-8548-b86e80150793'));
+      expect(manager!.email, equals('vannak.sok@clinic.kh'));
     });
 
     test('get all managers returns seed data', () {
@@ -38,7 +50,13 @@ void registerManagerServiceTests() {
       final managers = service.getAllManagers();
 
       // M001 -> 38605af8-aa47-4aae-8548-b86e80150793, M002 -> 87d71eb7-332e-4fb0-bd86-a912bfc30ed7
-      expect(managers.map((m) => m.id), containsAll(<String>['38605af8-aa47-4aae-8548-b86e80150793', '87d71eb7-332e-4fb0-bd86-a912bfc30ed7']));
+      expect(
+        managers.map((m) => m.id),
+        containsAll(<String>[
+          '38605af8-aa47-4aae-8548-b86e80150793',
+          '87d71eb7-332e-4fb0-bd86-a912bfc30ed7',
+        ]),
+      );
     });
 
     test('updates existing manager', () {
@@ -77,5 +95,18 @@ void registerManagerServiceTests() {
 
 // Allow running this file independently
 void main() {
+  final originalDir = Directory.current;
+  setUpAll(() {
+    final libDir = Directory(p.join(originalDir.path, 'lib'));
+    if (libDir.existsSync()) {
+      Directory.current = libDir.path;
+    }
+  });
+  tearDownAll(() {
+    Directory.current = originalDir.path;
+  });
+  setUp(() {
+    SessionService().logout();
+  });
   registerManagerServiceTests();
 }

@@ -1,6 +1,9 @@
 import 'package:test/test.dart';
 import 'package:dart_clinic/domain/models/status.dart';
 import 'package:dart_clinic/domain/services/admission_service.dart';
+import 'dart:io';
+import 'package:path/path.dart' as p;
+import 'package:dart_clinic/domain/services/session_service.dart';
 
 void registerAdmissionServiceTests() {
   group('AdmissionService', () {
@@ -70,5 +73,20 @@ void registerAdmissionServiceTests() {
 
 // Allow running this file independently
 void main() {
+  final originalDir = Directory.current;
+
+  setUpAll(() {
+    final libDir = Directory(p.join(originalDir.path, 'lib'));
+    if (libDir.existsSync()) {
+      Directory.current = libDir.path;
+    }
+  });
+
+  tearDownAll(() {
+    Directory.current = originalDir.path;
+  });
+  setUp(() {
+    SessionService().logout();
+  });
   registerAdmissionServiceTests();
 }
