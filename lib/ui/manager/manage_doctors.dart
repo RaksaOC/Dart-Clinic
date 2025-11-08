@@ -5,7 +5,7 @@ library;
 
 import 'package:prompts/prompts.dart' as prompts;
 import '../../domain/models/doctor.dart';
-import '../../domain/controllers/manager/doctors_controller.dart';
+import '../controllers/manager/doctors_controller.dart';
 import 'package:dart_clinic/utils/formatter.dart';
 import 'package:dart_clinic/utils/terminal.dart';
 

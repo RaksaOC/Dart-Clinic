@@ -4,9 +4,9 @@
 library;
 
 import 'package:prompts/prompts.dart' as prompts;
-import '../../domain/controllers/manager/admissions_controller.dart';
-import '../../domain/controllers/manager/rooms_controller.dart';
-import '../../domain/controllers/manager/patients_controller.dart';
+import '../controllers/manager/admissions_controller.dart';
+import '../controllers/manager/rooms_controller.dart';
+import '../controllers/manager/patients_controller.dart';
 import 'package:dart_clinic/utils/formatter.dart';
 import 'package:dart_clinic/utils/terminal.dart';
 

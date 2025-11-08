@@ -3,7 +3,7 @@
 /// Provides CLI interface for searching and viewing patients for doctors.
 library;
 
-import '../../domain/controllers/doctor/patients_controller.dart';
+import '../controllers/doctor/patients_controller.dart';
 import 'package:dart_clinic/utils/terminal.dart';
 import 'package:dart_clinic/utils/formatter.dart';
 

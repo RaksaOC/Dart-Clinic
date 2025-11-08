@@ -1,7 +1,7 @@
 /// Doctors Controller (Manager)
 library;
 
-import '../../services/doctor_service.dart';
+import '../../../domain/services/doctor_service.dart';
 import '../../../domain/models/doctor.dart';
 
 class DoctorsController {

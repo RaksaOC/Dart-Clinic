@@ -4,10 +4,10 @@
 library;
 
 import 'package:prompts/prompts.dart' as prompts;
-import '../../domain/controllers/doctor/appointments_controller.dart';
+import '../controllers/doctor/appointments_controller.dart';
 import 'package:dart_clinic/utils/formatter.dart';
 import 'package:dart_clinic/utils/terminal.dart';
-import '../../domain/controllers/doctor/patients_controller.dart';
+import '../controllers/doctor/patients_controller.dart';
 
 class ManageAppointments {
   final AppointmentsController _controller;

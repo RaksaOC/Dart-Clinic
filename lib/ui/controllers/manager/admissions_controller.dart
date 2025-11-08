@@ -1,7 +1,7 @@
 /// Admissions Controller (Manager)
 library;
 
-import '../../services/admission_service.dart';
+import '../../../domain/services/admission_service.dart';
 import '../../../domain/models/admission.dart';
 
 class AdmissionsController {

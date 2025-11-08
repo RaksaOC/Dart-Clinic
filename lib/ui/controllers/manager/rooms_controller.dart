@@ -1,7 +1,7 @@
 /// Rooms Controller (Manager)
 library;
 
-import '../../services/room_service.dart';
+import '../../../domain/services/room_service.dart';
 import '../../../domain/models/room.dart';
 
 class RoomsController {
